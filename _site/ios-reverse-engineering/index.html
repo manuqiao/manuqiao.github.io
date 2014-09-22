@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>iOS 程序逆向工程分析方法和工具介绍（GDB、IDA、ARMASM）</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>iOS 程序逆向工程分析方法和工具介绍（GDB、IDA、ARMASM）</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2011-10-10">2011-10-10</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#iOS" title="iOS">iOS</a>&nbsp;
+  
+  <a href="/tags/#逆向工程" title="逆向工程">逆向工程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>一、简述</p>
+
+<p>先用自己的话给 iOS 做个介绍：iOS 是基于 ARM 处理器的 Mac OS X 的移动设备专用操作系统，可以认为是 Unix-like 的操作系统核心和 Cocoa Touch 应用层构成的一个系统架构。</p>
+
+<p>基于上述描述，要分析 iOS 程序，我们需要有以下基础知识：<!-- more --></p>
+
+<ol>
+<li><p>ARM 汇编指令</p>
+
+<p>逆向工程意味着没有源代码可以参考，不得不在很低的一个 Level 去分析程序的意图，然后才能做更进一步的修改的操作。</p></li>
+<li><p>Unix-like 的系统</p>
+
+<p>了解 Unix-like 系统的基本知识是有必要的，如果有 *nix 上常用的 调试工具 gdb 的知识更佳。</p></li>
+<li><p>Coacoa Touch 的开发语言 Object C</p>
+
+<p>AppStore 中发布的 iOS 的应用程序都是在 XCode 中使用 Object C 编写出来的，了解开发语言才能更清楚地知道原作者的意图，在一堆堆没有人性的汇编代码面前，做到“目无全牛”绝不是轻而易举能达到的。</p></li>
+<li><p>逆向工程中常用的思维方式和工具应用</p>
+
+<p>废话了，这才是本文的重点……</p></li>
+</ol>
+
+
+<p>  下面内容中将会介绍到的工具包括：GDB、IDA、CeleASM、ClassDump、WinHex，基于 Mac OS X 下及其蹩脚的和稀有的工具，分析 iOS 程序的主要功能平台听应该选定在 Windows 下进行（Mac OS X下想找到对应的工具，试试看——连个拿得出手的 Hex 编辑工具都没有）。</p>
+
+<p>[待续]</p>
+
+<p>二、读懂汇编代码的意图</p>
+
+<p>（一）、静态分析<br/>
+[待续]</p>
+
+<p>http://www.codethecode.com/projects/class-dump/<br/>
+https://github.com/kennytm/iphone-private-frameworks<br/>
+http://zhiwei.li/text/2011/09/iphone%E7%A7%81%E6%9C%89api%E8%B7%9F%E7%94%B5%E8%AF%9D%E7%9B%B8%E5%85%B3%E7%9A%84coretelephony/<br/>
+http://code.google.com/p/iphone-wireless/source/browse/wiki/CoreTelephonyFunctions.wiki</p>
+
+<p>（二）、动态调试<br/>
+[待续]</p>
+
+<p>三、修改汇编代码</p>
+
+<p>[待续]</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/gdb-debugging-for-ios/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/ios-crash-report-and-dsym/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="549" data-url="http://yonsm.net/ios-reverse-engineering/" data-title="iOS 程序逆向工程分析方法和工具介绍（GDB、IDA、ARMASM）" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2011-10-10-ios-reverse-engineering.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

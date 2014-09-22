@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>一个图像类</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>一个图像类</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2004-11-27">2004-11-27</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#代码" title="代码">代码</a>&nbsp;
+  
+</span>
+
+
+</section>
+<section class="post">
+<p>下载: <a href="/assets/1101483036.rar">CImage</a> (6 KB)</p>
+
+<p>不是 MS 的 CImage：）功能不多，仅仅是为了 CuteFoto 够用而已。为图像处理方便，内部数据格式为 DIB 24。</p>
+
+<!-- more -->
+
+
+<p></p>
+
+<p>支持以下功能:</p>
+
+<ul>
+<li>打开 BMP/GIF/JPG 文件。</li>
+<li>显示图图像。</li>
+<li>保存或局部保存为 BMP 24。</li>
+<li>支持一次 Undo 操作。</li>
+</ul>
+
+
+<p>支持以下图像处理:</p>
+
+<ul>
+<li>缩放图像。</li>
+<li>翻转图像。</li>
+<li>旋转图像。</li>
+<li>去色。</li>
+<li>曝光。</li>
+<li>浮雕。</li>
+<li>颜色调整。</li>
+<li>边缘检测。</li>
+</ul>
+
+
+<p>// CImage 类声明<br/>
+class CImage<br/>
+{<br/>
+protected:<br/>
+   // 成员变量<br/>
+   UINT m_uWidth;                  // 图像宽度<br/>
+   UINT m_uHeight;                 // 图像高度<br/>
+   PBYTE m_pbBits;                 // 图像数据指针<br/>
+   DOUBLE m_dScale;                // 用于绘制图像的缩放系数</p>
+
+<p>   UINT m_uBackupWidth;            // 备份图像宽度<br/>
+   UINT m_uBackupHeight;           // 备份图像高度<br/>
+   PBYTE m_pbBackupBits;           // 备份图像数据指针</p>
+
+<p>   TCHAR m_tzFileName[MAX_PATH];   // 当前图像文件名称</p>
+
+<p>public:<br/>
+   // 构造函数<br/>
+   CImage();</p>
+
+<p>   // 析构函数<br/>
+   virtual inline CImage::~CImage();</p>
+
+<p>   // 获取图像宽度<br/>
+   inline UINT GetWidth();</p>
+
+<p>   // 获取图像高度<br/>
+   inline UINT GetHeight();</p>
+
+<p>   // 获取绘制宽度<br/>
+   inline UINT GetScaleWidth();</p>
+
+<p>   // 获取图像高度<br/>
+   inline UINT GetScaleHeight();</p>
+
+<p>   // 获取用于绘制图像的缩放系数<br/>
+   inline DOUBLE GetScale();</p>
+
+<p>   // 获取用于绘制图像的缩放系数<br/>
+   inline VOID SetScale(DOUBLE dScale = 1);</p>
+
+<p>   // 获取当前图像的文件名，返回值指向文件名缓冲区指针，允许被更改<br/>
+   inline PTSTR GetFileName();</p>
+
+<p>   // 获取一行图像所占的字节数<br/>
+   inline UINT GetPitch();</p>
+
+<p>   // 获取图像所占的字节数<br/>
+   inline UINT GetSize();</p>
+
+<p>   // 获取第 y 行的图像数据指针<br/>
+   inline PBYTE GetBits();</p>
+
+<p>   // 获取第 y 行的图像数据指针<br/>
+   inline PBYTE GetBits(UINT y);</p>
+
+<p>   // 获取第 (x, y) 点的图像数据指针<br/>
+   inline PBYTE GetBits(UINT x, UINT y);</p>
+
+<p>   // 获取 BITMAPINFOHEADER 信息<br/>
+   inline VOID GetBih(PBITMAPINFOHEADER pbihInfo);</p>
+
+<p>   // 创建图像。返回 TRUE 表示成功，将更新图像数据；返回 FALSE 表示失败，原有图像数据不会被更改<br/>
+   inline BOOL Create(UINT uWidth, UINT uHeight, const PBYTE pbBits = NULL);</p>
+
+<p>   // 附加图像。返回 TRUE 表示成功，将更新图像数据；返回 FALSE 表示失败，原有图像数据不会被更改<br/>
+   inline BOOL Attach(UINT uWidth, UINT uHeight, PBYTE pbBits);</p>
+
+<p>   // 销毁图像数据<br/>
+   inline VOID Destroy();</p>
+
+<p>   // 获取备份图像宽度<br/>
+   inline UINT GetBackupWidth();</p>
+
+<p>   // 获取备份图像高度<br/>
+   inline UINT GetBackupHeight();</p>
+
+<p>   // 获取备份图像数据<br/>
+   inline PBYTE GetBackupBits();</p>
+
+<p>   // 备份图像数据<br/>
+   inline VOID Backup();</p>
+
+<p>   // 恢复图像数据<br/>
+   inline VOID Restore();</p>
+
+<p>   // 销毁备份图像数据<br/>
+   inline VOID DestroyBackup();</p>
+
+<p>   // 读取、保存及绘制图像<br/>
+   BOOL Load(PCTSTR ptzFileName);<br/>
+   BOOL Save(PCTSTR ptzFileName, LPCRECT prtRect = NULL);<br/>
+   VOID Draw(HDC hDC, INT iLeft = 0, INT iTop = 0);</p>
+
+<p>   // 图像变换<br/>
+   VOID Stretch(UINT uWidth, UINT uHeight);<br/>
+   VOID FlipHorizon();<br/>
+   VOID FlipVertical();<br/>
+   VOID Rotate(UINT uAngle, COLORREF crColor = 0x00FFFFFF);</p>
+
+<p>   // 图像处理<br/>
+   VOID Decolourize();<br/>
+   VOID Expose(BYTE bValue = 128);<br/>
+   VOID Emboss();<br/>
+   VOID Adjust(INT iRed, INT iGreen, INT iBlue);</p>
+
+<p>   // 边缘检测<br/>
+   VOID Fringe(BYTE bValue = 64);<br/>
+};</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/good-faith/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/so-much-registers-in-amd64-architecture/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="101" data-url="http://yonsm.net/an-image-class/" data-title="一个图像类" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2004-11-27-an-image-class.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

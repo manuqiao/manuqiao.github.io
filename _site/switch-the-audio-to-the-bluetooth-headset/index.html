@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>切换音频到蓝牙耳机</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>切换音频到蓝牙耳机</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2007-01-31">2007-01-31</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#代码" title="代码">代码</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#编程" title="编程">编程</a>&nbsp;
+  
+  <a href="/tags/#WM" title="WM">WM</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>买了个蓝牙耳机，竟然不能把除了电话之外的普通音频切换到蓝牙而机上。分析了一个 BTAudoToggle.exe 的代码，很快搞定。代码如下：</p>
+
+<p>   HANDLE hFile;<br/>
+   hFile = CreateFile(TEXT("BAG0:"), 0, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_READONLY, NULL);<br/>
+   if (hFile != INVALID_HANDLE_VALUE)<br/>
+   {<br/>
+     g_pMain->m_uFlag ^= VF_BTAudio;<br/>
+     DeviceIoControl(hFile, (g_pMain->m_uFlag &amp; VF_BTAudio) ? 1 : 2, NULL, 0, NULL, 0, NULL, NULL);<br/>
+     CloseHandle(hFile);<br/>
+   }<br/>
+   else<br/>
+   {<br/>
+     g_pMain->ErrorBox(IDM_Utility_BTAudio);<br/>
+   }</p>
+
+<p>已整合到最新的 <a href="/assets/CeleTask.2.2.rar">CeleTask 2.2 RAR</a> 版本内，命令 ID 是 1055。要的话可以到 CeleTask 的日志中下载。</p>
+
+<p>:)</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/acquire-for-celedial-translation/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/default-hv-registry-file-in-cooking-rom/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="290" data-url="http://yonsm.net/switch-the-audio-to-the-bluetooth-headset/" data-title="切换音频到蓝牙耳机" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2007-01-30-switch-the-audio-to-the-bluetooth-headset.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>[转载]用 FFMPEG 合并 MP4 视频</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>[转载]用 FFMPEG 合并 MP4 视频</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2013-10-15">2013-10-15</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#折腾" title="折腾">折腾</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>因为 ffmpeg 是支持切分 mp4 视频的，所以我就理所当然的以为 ffmpeg 是支持视频合并。直到今天同事找我问方法，才发现一直以为的方法是错误的， mp4 不支持直接 concate（丢人了。。。），赶紧补了一下能量，从网上抓来了多种实现。</p>
+
+<p>注： 这里的 mp4 指的是网上最多见的 h264+aac mpeg4 容器的方式</p>
+
+<p>1). ffmpeg + mpeg</p>
+
+<p>这种是网上最常见的，基本思路是将 mp4 先转码为 mpeg 文件，mpeg是支持简单拼接的，然后再转回 mp4。</p>
+
+<pre><code>  ffmpeg -i 1.mp4 -sameq 1.mpg
+  ffmpeg -i 2.mp4 -sameq 2.mpg
+  cat 1.mpg 2.mpg | ffmpeg -f mpeg -i - -sameq -vcodec mpeg4 output.mp4
+</code></pre>
+
+<p>这种方式弊端很明显，需要转码。而抛开转码本身会造成的质量损失，这个效率真心无法忍受。</p>
+
+<p>2). MP4Box</p>
+
+<p>这个是 gpac 搞的专门处理 mp4 的工具，由于它会自己内部处理连接部分的数据，所以可以简单的使用类似 concate 的语法：</p>
+
+<pre><code>  MP4Box -cat 1.mp4 -cat 2.mp4 output.mp4
+</code></pre>
+
+<p>问题是，还要引入一个新的工具，而不能统一用 ffmpeg。这个也不爽。更不用说在 centos 下，你需要装一堆库，然后源码编译。有兴趣的朋友可以参考：</p>
+
+<p>http://howto-heaven.blogspot.jp/2011/01/how-to-install-mp4box-on-centos.html</p>
+
+<p>3). ffmpeg + ts
+蹦蹦蹦蹦~~，重磅推出终极解决方案。这个的思路是先将 mp4 转化为同样编码形式的 ts 流，因为 ts流是可以 concate 的，先把 mp4 封装成 ts ，然后 concate ts 流， 最后再把 ts 流转化为 mp4。</p>
+
+<pre><code>  ffmpeg -i 1.mp4 -vcodec copy -acodec copy -vbsf h264_mp4toannexb 1.ts
+  ffmpeg -i 2.mp4 -vcodec copy -acodec copy -vbsf h264_mp4toannexb 2.ts
+  ffmpeg -i "concat:1.ts|2.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4
+</code></pre>
+
+<p>转自：http://blog.eryue.me/?p=135</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/medex/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/photoshop/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2013-10-15-mp4merge.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>CeleCmd 2.0 - 功能强大、灵活易用的 WM 批处理解释引擎</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>CeleCmd 2.0 - 功能强大、灵活易用的 WM 批处理解释引擎</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2009-01-01">2009-01-01</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#软件" title="软件">软件</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#分享" title="分享">分享</a>&nbsp;
+  
+  <a href="/tags/#编程" title="编程">编程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>欢迎使用功能强大、灵活方便的 CeleCmd 命令解释引擎。您只要编写简单的 CeleCmd 命令文件，就能在 Windows Mobile 中实现灵活强大的批处理功能。</p>
+
+<p>1.更新为 2.0.670 修正 RAR 解压和 MULTI-SZ REG 的问题等。<!-- more --></p>
+
+<p>2.绝大部分命令兼容老版本的 CCS 文件，其中一个 LOAD 除外， 请参看帮助说明。</p>
+
+<ol>
+<li>命令更改：</li>
+</ol>
+
+
+<p>LOAD：不再支持通配符，如果需要递归搜索和通配符，请使用省略命令的形式，如“!\Storage Card\CeleSet<em>.</em>”，表示用 CeleCmd 打开Storage Card及其子目录中的所有 CeleSet 开头的文件（包括 REG/EXE/DLL/CCS/PROVXML 都会被加载）。<br/>
+REGX：功能增强，支持判断键值是否已经是特定值。<br/>
+DLGX：功能已经大大增强，可以非常方便地定制注册表 Tweak 的对话框，支持PPC滚动条和SP焦点导航。<br/>
+FILE：DELETE和MOVE交给系统做，Copy File 自己完全实现，支持文件夹，支持递归，支持通配符；复制支持覆盖ROM文件。<br/>
+CCUI ：支持参数，填写命令道编辑框。<br/>
+HELP：支持参数，支持显示自定义的 HTML 内容给用户。<br/>
+其它：小更改未列出。</p>
+
+<p>4.新增命令：<br/>
+RARX：支持RAR 解压缩（如果存在 UnRAR.dll）。（如果需要支持TGZX，请使用 CeleCmdTGZX.exe）。<br/>
+DISP：旋转屏幕。<br/>
+POST：发送消息。</p>
+
+<p>2.0 下载：<br/>
+<a href="/assets/CeleCmd.rar">下载</a></p>
+
+<p>2.0.686 源代码下载（请遵循许可协议）：<br/>
+<a href="/assets/CeleCmd.2.0.686.zip">下载</a></p>
+
+<p>下载 (1.6，支持TGZ 解压)：<br/>
+<a href="/assets/CeleCmd.1.6.360.zip">下载</a></p>
+
+<p>论坛讨论：<br/>
+http://www.ioicn.com.cn/forum/viewthread.php?tid=311207</p>
+
+<p>网友zxlch的修改增强版本（本人未验证使用）：<br/>
+http://www.ppcsoft.net/html/354.html<br/>
+http://hi.baidu.com/zxlch/blog/item/2184f6cb7a880cf052664fdb.html</p>
+
+<p><a href="/assets/CeleCmd.htm">使用说明</a></p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/call-unrar-dll-to-extract-file/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/frightened-the-server/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="329" data-url="http://yonsm.net/celecmd/" data-title="CeleCmd 2.0 - 功能强大、灵活易用的 WM 批处理解释引擎" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2009-01-01-celecmd.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

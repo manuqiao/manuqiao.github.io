@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>CodeZap - 给 EXE 添加额外代码的 C++ Engine</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>CodeZap - 给 EXE 添加额外代码的 C++ Engine</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2007-05-02">2007-05-02</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#代码" title="代码">代码</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Win" title="Win">Win</a>&nbsp;
+  
+  <a href="/tags/#逆向工程" title="逆向工程">逆向工程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>给 EXE 添加节显示启动信息的代码多得很，CodeZap 这个最大的特色就是 C++ 写成的，且提供了比较独立美观的Z函数。只要了解 C/C++ 语言，就能写添加大量的代码，完全可以工程化操作。</p>
+
+<p>CodeZap 简要说明</p>
+
+<p>CodeZap 是用来给 PE 文件添加额外代码的 C++ SDK。您可以通过使用熟悉而且容易工程化的 C/C++ 语言来添加大量的可执行代码。</p>
+
+<p>Codez 使用非常简单，你只要模仿 ZCode 函数，写出自己的 ZCode 即可。其中 ZCode 的要求如下：</p>
+
+<ol>
+<li>ZCode 必须是 CDECL 调用规范。</li>
+<li>ZCode 函数最后的 <em>_asm 块，除 #ifdef </em>DEBUG 包围的之外，必须保留。</li>
+<li>ZCode 中不能使用字符串常量。</li>
+<li>ZCode 中不能调用外部函数。</li>
+<li>ZCode 中可以调用 __forceinline 声明的函数。</li>
+<li>ZCode 中可以使用 CodeZap 中所有 Z 开头的函数。</li>
+<li>ZCode 中的 C++ 代码可以任意添加，只要符合前面的所有条件。</li>
+<li>可以修改  #ifdef _DEBUG 中的汇编代码为你所所要情形。</li>
+<li>可以修改函数的参数（基于上一条为前提）。</li>
+</ol>
+
+
+<p>基于以上要求， Viual Studio 2003/2005 中使用，必须在 Project 设置中，关闭缓冲区安全检查。否则将会生成的代码中会调用 security_cookie 函数，导致代码无法在目标文件中正确执行。</p>
+
+<p>另外，用这些Z函数来写 ShellCode，也是非常高效的，比平时写 C/C++ 程序麻烦一点点而已。</p>
+
+<p>CodeZap 调用示例：<br/>
+CodeZap(TEXT("C:\ABC.CZ.exe"), TEXT("C:\ABC.exe"), (PBYTE) ZCode);</p>
+
+<p>Powered By Yonsm<br/>
+WWW.Yonsm.NET<br/>
+2007.4.31</p>
+
+<p>接口函数：<br/>
+BOOL CodeZap(PCTSTR ptzDst, PCTSTR ptzSrc, PBYTE pbCode);<br/>
+ZAPI HMODULE ZGetKernelHandle();<br/>
+ZAPI HMODULE ZGetModuleHandle(PCTSTR ptzModule = NULL);<br/>
+ZAPI HMODULE ZSearchModuleHandle(PCTSTR ptzModule, PBYTE pbBase = (PBYTE) 0x70000000, PBYTE pbMax = (PBYTE) 0x80000000);<br/>
+ZAPI FARPROC ZGetProcAddress(HMODULE hModule, PCTSTR ptzProc);</p>
+
+<!-- more -->
+
+
+<p></p>
+
+<p>ZCode 示例<br/>
+VOID CDECL ZCode()<br/>
+{<br/>
+ // KERNEL32<br/>
+ HMODULE hKernel32 = ZGetKernelHandle();</p>
+
+<p> // GetProcAddress<br/>
+ TCHAR szGetProcAddress[] = {'G', 'e', 't', 'P', 'r', 'o', 'c', 'A', 'd', 'd', 'r', 'e', 's', 's', 0};<br/>
+ PGetProcAddress pGetProcAddress = (PGetProcAddress) ZGetProcAddress(hKernel32, szGetProcAddress);<br/>
+ if (!pGetProcAddress) return;</p>
+
+<p> // LoadLibrary<br/>
+ CHAR szLoadLibrary[] = {'L', 'o', 'a', 'd', 'L', 'i', 'b', 'r', 'a', 'r', 'y', ZEND};<br/>
+ PLoadLibrary pLoadLibrary = (PLoadLibrary) pGetProcAddress(hKernel32, szLoadLibrary);<br/>
+ if (!pLoadLibrary) return;</p>
+
+<p> // USER32<br/>
+ TCHAR tzUser32[] = {'U', 'S', 'E', 'R', '3', '2', 0};<br/>
+ HMODULE hUser32 = pLoadLibrary(tzUser32);</p>
+
+<p> // MessageBox<br/>
+ CHAR szMessageBox[] = {'M', 'e', 's', 's', 'a', 'g', 'e', 'B', 'o', 'x', ZEND};<br/>
+ PMessageBox pMessageBox = (PMessageBox) pGetProcAddress(hUser32, szMessageBox);</p>
+
+<p> TCHAR tzText[] = {'H', 'a', 'h', 'a', ',', ' ', 'I', ' ', 'a', 'm', ' ', 'C', 'o', 'd', 'e', 'Z', 'a', 'p', '!', 0};<br/>
+ TCHAR tzCaption[] = {'C', 'o', 'd', 'e', 'Z', 'a', 'p', 0};<br/>
+ pMessageBox(NULL, tzText, tzCaption, MB_ICONINFORMATION);</p>
+
+<p> <em>_asm<br/>
+ {<br/>
+   JMP    </em>ZCodeEnd;</p>
+
+<p>_ZJumpOEP:<br/>
+   // Jump to OEP: Jump delta will be fixed by CodeZap<br/>
+   JMP    $ + 5;</p>
+
+<h1>ifndef _DEBUG</h1>
+
+<p>   // Put your own ASM code here<br/>
+   PUSHAD;<br/>
+   CALL  ZCode;<br/>
+   POPAD;</p>
+
+<h1>endif</h1>
+
+<p>   JMP    <em>ZJumpOEP;<br/>
+</em>ZCodeEnd:<br/>
+ }<br/>
+}</p>
+
+<p>下载：<br/>
+<a href="/assets/CodeZap.rar">下载</a></p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/search-module-base-address/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/celesign/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="323" data-url="http://yonsm.net/codezap/" data-title="CodeZap - 给 EXE 添加额外代码的 C++ Engine" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2007-05-02-codezap.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

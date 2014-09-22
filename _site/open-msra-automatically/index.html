@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>主动打开目标计算机的远程协助</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>主动打开目标计算机的远程协助</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2008-12-01">2008-12-01</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Win" title="Win">Win</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>Windows XP/Vista 提供的“远程协助”是通过共享桌面提供远程协助的好方法。但是“远程桌面”必须在目标机器的用户配合的情况下才能做到。实际上，Microsoft Windows 语焉不详的帮助说可以输入目标计算机名称或IP地址来主动访问目标机器。但实际上这是空话——根本就不可以（据说在同一个Domain中才行，但我测试好像也不行）。<!-- more --></p>
+
+<p>另外，用远程桌面客户端 mstsc 登录目标机器，无法做到共享桌面（即使加上/console参数也只能登录到控制台，而不能共享）。</p>
+
+<p>一般来说，如果目标机器有问题（用户想同时了解如何解决的情况下），叫目标机器上的用户打开远程协助是一个很费劲的事情（菜鸟太多啦！）。经过捉摸，终于找到了方便的方法，主动打开目标机器上的远程协助——用PSEXEC在远程机器的指定用户桌面上执行一个带命令行参数的MSRA程序。</p>
+
+<p>PSEXEC \SH6 -u Jane -p ****** -i msra.exe /saveasfile D:\Yonsm 123456<br/>
+MSRA /openfile \SH6\D$\Yonsm</p>
+
+<p>询问密码输入后即可自动开启</p>
+
+<p>详细情况如下：</p>
+
+<p>E:\Tools\SYSINT>psexec</p>
+
+<p>PsExec v1.94 - Execute processes remotely<br/>
+Copyright (C) 2001-2008 Mark Russinovich<br/>
+Sysinternals - www.sysinternals.com</p>
+
+<p>PsExec executes a program on a remote system, where remotely executed console<br/>
+applications execute interactively.</p>
+
+<p>Usage: psexec [\computer[,computer2[,...] | @file][-u user [-p psswd]][-n s][-l<br/>
+][-s|-e][-x][-i [session]][-c [-f|-v]][-w directory][-d][-][-a n,n,...<br/>
+] cmd [arguments]<br/>
+    -a         Separate processors on which the application can run with<br/>
+               commas where 1 is the lowest numbered CPU. For example,<br/>
+               to run the application on CPU 2 and CPU 4, enter:<br/>
+               "-a 2,4"<br/>
+    -c         Copy the specified program to the remote system for<br/>
+               execution. If you omit this option the application<br/>
+               must be in the system path on the remote system.<br/>
+    -d         Don't wait for process to terminate (non-interactive).<br/>
+    -e         Does not load the specified account's profile.<br/>
+    -f         Copy the specified program even if the file already<br/>
+               exists on the remote system.<br/>
+    -i         Run the program so that it interacts with the desktop of the<br/>
+               specified session on the remote system. If no session is<br/>
+               specified the process runs in the console session.<br/>
+    -l         Run process as limited user (strips the Administrators group<br/>
+               and allows only privileges assigned to the Users group).<br/>
+               On Windows Vista the process runs with Low Integrity.<br/>
+    -n         Specifies timeout in seconds connecting to remote computers.<br/>
+    -p         Specifies optional password for user name. If you omit this<br/>
+               you will be prompted to enter a hidden password.<br/>
+    -s         Run the remote process in the System account.<br/>
+    -u         Specifies optional user name for login to remote<br/>
+               computer.<br/>
+    -v         Copy the specified file only if it has a higher version number<br/>
+               or is newer on than the one on the remote system.<br/>
+    -w         Set the working directory of the process (relative to<br/>
+               remote computer).<br/>
+    -x         Display the UI on the Winlogon secure desktop (local system<br/>
+               only).<br/>
+    -priority  Specifies -low, -belownormal, -abovenormal, -high or<br/>
+               -realtime to run the process at a different priority. Use<br/>
+               -background to run at low memory and I/O priority on Vista.<br/>
+    computer   Direct PsExec to run the application on the remote<br/>
+               computer or computers specified. If you omit the computer<br/>
+               name PsExec runs the application on the local system,<br/>
+               and if you specify a wildcard (\*), PsExec runs the<br/>
+               command on all computers in the current domain.<br/>
+    @file      PsExec will execute the command on each of the computers listed<br/>
+               in the file.<br/>
+    program    Name of application to execute.<br/>
+    arguments  Arguments to pass (note that file paths must be<br/>
+               absolute paths on the target system).</p>
+
+<p>You can enclose applications that have spaces in their name with<br/>
+quotation marks e.g. psexec \marklap "c:\long name app.exe".<br/>
+Input is only passed to the remote system when you press the enter<br/>
+key, and typing Ctrl-C terminates the remote process.</p>
+
+<p>If you omit a user name the process will run in the context of your<br/>
+account on the remote system, but will not have access to network<br/>
+resources (because it is impersonating). Specify a valid user name<br/>
+in the Domain\User syntax if the remote process requires access<br/>
+to network resources or to run in a different account. Note that<br/>
+the password is transmitted in clear text to the remote system.</p>
+
+<p>Error codes returned by PsExec are specific to the applications you<br/>
+execute, not PsExec.</p>
+
+<p>E:\Tools\SYSINT>psexec \SH -u Jane -p ****** -i msra.exe /saveasfile D:\Y<br/>
+onsm 123456</p>
+
+<p>PsExec v1.94 - Execute processes remotely<br/>
+Copyright (C) 2001-2008 Mark Russinovich<br/>
+Sysinternals - www.sysinternals.com<br/>
+……</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/celelib/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/refresh-the-ppc-today-plugin/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="441" data-url="http://yonsm.net/open-msra-automatically/" data-title="主动打开目标计算机的远程协助" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2008-12-01-open-msra-automatically.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

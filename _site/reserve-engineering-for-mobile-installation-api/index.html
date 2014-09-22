@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>分析 iOS 中使用 Mobile Installation 安装 IPA</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>分析 iOS 中使用 Mobile Installation 安装 IPA</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2012-01-17">2012-01-17</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#iOS" title="iOS">iOS</a>&nbsp;
+  
+  <a href="/tags/#逆向工程" title="逆向工程">逆向工程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>iOS 中要安装一个程序，从用户角度看有几种三：</p>
+
+<ol>
+<li><p>类似 Cydia 这种 DEB 的方式：直接安装到 /Applications 作为系统的APP，无法长按删除（不讨论CyDelete）。</p></li>
+<li><p>类似 UCWEB/Installous 的伪 IPA 的方式：直接解包 IPA （实际上就是 ZIP）,模拟官方 IPA 的安装方式。可以理解为黑盒测试这种只管结果的模式。这个安装方式可以说是知其表而不知其里，会有N多问题，如图标可能无法刷新、IPA无法同步回 iTunes 等问题。从这个角度说，我个人不推荐大家使用 UCWEB 下载安装 IPA，也不推荐使用 Installous。</p></li>
+<li><p>官方支持的 AppStore/iTunes 安装 IPA 的模式：这就是我这里要说的 Mobile Installation Framework 的方式，这是最官方、最安全、最完美的安装 IPA 的方式。目前已知、同步推/iFunBox/iFanBox/iTools都是使用这几种方式（其中 iFanBox 应该是在我和我交流之后才搞定这个：）</p></li>
+</ol>
+
+
+<p>Mobile Installation 是 iOS 中负责安装 IPA 的 Framework，<!-- more -->，通过 IDA 分析 /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/PrivateFrameworks/MobileInstallation.framework/MobileInstallation 可知它导出了以下 API：</p>
+
+<p>Name Address Ordinal</p>
+
+<hr />
+
+<p><em>MobileInstallationArchive 00000F80
+</em>MobileInstallationBrowse 00000FE0
+<em>MobileInstallationCheckCapabilitiesMatch 00000BE0
+</em>MobileInstallationCopySafeHarbors 00000CA4
+<em>MobileInstallationInstall 00001144
+</em>MobileInstallationLookup 00001034
+<em>MobileInstallationLookupArchives 00000E70
+</em>MobileInstallationProcessRestoredContainer 00000E10
+<em>MobileInstallationRegisterSafeHarbor 00000D58
+</em>MobileInstallationRemoveArchive 00000EC0
+<em>MobileInstallationRemoveSafeHarbor 00000CF4
+</em>MobileInstallationRestore 00000F20
+<em>MobileInstallationSetDeviceCapabilities 00000C40
+</em>MobileInstallationUninstall 00001084
+_MobileInstallationUpgrade 000010E4
+__MobileInstallationRebuildMap 00000B90</p>
+
+<p>其中有两个 API 是非常有用的：</p>
+
+<p><em>MobileInstallationInstall：安装 IPA
+</em>MobileInstallationLookup：列出已安装的 IPA</p>
+
+<p>直接贴 MobileInstallationInstall 分析结果了，分析过程看前面几期：）</p>
+
+<p>`
+//
+typedef int (<em>MobileInstallationInstall)(NSString </em>path, NSDictionary <em>dict, void </em>na, NSString <em>path2_equal_path_maybe_no_use);
+IPAResult IPAInstall(NSString </em>path)
+{
+    void <em>lib = dlopen("/System/Library/PrivateFrameworks/MobileInstallation.framework/MobileInstallation", RTLD_LAZY);
+    if (lib)
+    {
+        MobileInstallationInstall pMobileInstallationInstall = (MobileInstallationInstall)dlsym(lib, "MobileInstallationInstall");
+        if (pMobileInstallationInstall)
+        {
+            NSString </em>name = [@"Install_" stringByAppendingString:path.lastPathComponent];
+            NSString* temp = [NSTemporaryDirectory() stringByAppendingPathComponent:name];
+            if (![[NSFileManager defaultManager] copyItemAtPath:path toPath:temp error:nil]) return IPAResultFileNotFound;</p>
+
+<pre><code>        int ret = (IPAResult)pMobileInstallationInstall(temp, [NSDictionary dictionaryWithObject:@"User" forKey:@"ApplicationType"], 0, path);
+        [[NSFileManager defaultManager] removeItemAtPath:temp error:nil];
+        return ret;
+    }
+}
+return IPAResultNoFunction;
+</code></pre>
+
+<p>}</p>
+
+<p>`</p>
+
+<p>补充一下，之所以要拷贝IPA是因为安装IPA后可能被删除。如果安装IPA可以删除无所谓则不需要拷贝到一个新地方。</p>
+
+<p>详细代码，请邮件索取 Yonsm@msn.com。</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/method-of-obtaining-a-normal-crash-log-on-your-ios-device/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/using-gpt-vs-mbr-in-mac-osx/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="553" data-url="http://yonsm.net/reserve-engineering-for-mobile-installation-api/" data-title="分析 iOS 中使用 Mobile Installation 安装 IPA" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2012-01-17-reserve-engineering-for-mobile-installation-api.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

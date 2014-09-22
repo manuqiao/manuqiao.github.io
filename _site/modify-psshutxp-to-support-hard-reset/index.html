@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>修改 psShutXP 使他的硬起功能生效</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>修改 psShutXP 使他的硬起功能生效</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2007-06-25">2007-06-25</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#代码" title="代码">代码</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#逆向工程" title="逆向工程">逆向工程</a>&nbsp;
+  
+  <a href="/tags/#WM" title="WM">WM</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>经验征得之，SetCleanRebootFlag 对于 HTC 系列的 PPC 无效。但一般的软件硬起，往往就用这个函数，psShutXP 也不例外。</p>
+
+<p>我已经修改 psShutXP，让它的硬起功能真的“硬起”了。下面是分析 HTC ClearStorage 的关键代码（这很容易，但是要把这些代码挪动到 psShutXP 中，那不是一般的难啊——还好我搞定了：）。<!-- more --></p>
+
+<p>// HTC Cold Reboot<br/>
+.text:00011000 sub_11000                               ; CODE XREF: sub_11064+11C p<br/>
+.text:00011000                                         ; DATA XREF: .pdata:00014000 o<br/>
+.text:00011000<br/>
+.text:00011000 var_8           = -8<br/>
+.text:00011000 var_4           = -4<br/>
+.text:00011000 arg_4           =  4<br/>
+.text:00011000<br/>
+.text:00011000                 STR     LR, [SP,#var_4]!<br/>
+.text:00011004                 SUB     SP, SP, #8<br/>
+.text:00011008                 LDR     R0, =0x1012594<br/>
+.text:0001100C                 MOV     LR, #0<br/>
+.text:00011010                 MOV     R3, #0<br/>
+.text:00011014                 MOV     R2, #0<br/>
+.text:00011018                 MOV     R1, #0<br/>
+.text:0001101C                 STR     LR, [SP,#8+var_4]<br/>
+.text:00011020                 STR     LR, [SP,#8+var_8]<br/>
+.text:00011024                 BL      KernelIoControl<br/>
+.text:00011024<br/>
+.text:00011028                 ADD     SP, SP, #8<br/>
+.text:0001102C                 LDR     PC, [SP],#arg_4<br/>
+.text:0001102C<br/>
+.text:0001102C ; End of function sub_11000<br/>
+.text:0001102C<br/>
+.text:0001102C ; ---------------------------------------------------------------------------<br/>
+.text:00011030 dword_11030     DCD 0x1012594           ; DATA XREF: sub_11000+8 r</p>
+
+<p>// REEBOOT<br/>
+.text:00011034<br/>
+.text:00011034                 STR     LR, [SP,#var_4]!<br/>
+.text:00011038                 MOV     R3, #0<br/>
+.text:0001103C                 MOV     R2, #0<br/>
+.text:00011040                 MOV     R1, #0<br/>
+.text:00011044                 MOV     R0, #0xDF<br/>
+.text:00011048                 BL      keybd_event<br/>
+.text:00011048<br/>
+.text:0001104C                 MOV     R3, #0<br/>
+.text:00011050                 MOV     R2, #2<br/>
+.text:00011054                 MOV     R1, #0<br/>
+.text:00011058                 MOV     R0, #0xDF<br/>
+.text:0001105C                 LDR     LR, [SP],#arg_4<br/>
+.text:00011060                 B       keybd_event<br/>
+.text:00011060</p>
+
+<p>翻译成 C 代码：</p>
+
+<h1>define IOCTL_HAL_COLDBOOT_HTC 0x1012594</h1>
+
+<p>KernelIoControl(IOCTL_HAL_COLDBOOT_HTC, NULL, 0, NULL, 0, NULL);<br/>
+keybd_event(VK_OFF, 0, 0, 0);<br/>
+keybd_event(VK_OFF, 0, KEYEVENTF_KEYUP, 0);</p>
+
+<p>其实后两句改成下面更好些：</p>
+
+<h1>define IOCTL_HAL_REBOOT 0x101003C</h1>
+
+<p>KernelIoControl(IOCTL_HAL_REBOOT, NULL, 0, NULL, 0, NULL);</p>
+
+<p>修改过的程序在 Prophet 上验证通过。</p>
+
+<p>乘胜追击，继续分析完全系统电源功能，找来 PowerOffWarning，得出如下：</p>
+
+<p>// 关闭 RIL，否则别人打你电话就变成了无信号状态，所谓超级飞行了。<br/>
+.text:00011478                 BL      sub_11088</p>
+
+<p>// 完全关闭电源<br/>
+.text:0001147C                 MOV     R3, #0x1000000<br/>
+.text:00011480                 ORR     R0, R3, #unk_12000<br/>
+.text:00011484                 MOV     LR, #0<br/>
+.text:00011488                 MOV     R3, #0<br/>
+.text:0001148C                 MOV     R2, #0<br/>
+.text:00011490                 MOV     R1, #0<br/>
+.text:00011494                 STR     LR, [SP,#0x25C+var_258]<br/>
+.text:00011498                 STR     LR, [SP,#0x25C+var_25C]<br/>
+.text:0001149C                 BL      KernelIoControl<br/>
+.text:0001149C<br/>
+.text:000114A0                 BL      GwesPowerOffSystem</p>
+
+<p>哈哈，今天一大收获，搞定两个问题，“业界”无公开的：）</p>
+
+<p>下载我汉化修改过的仅适合 HTC Prophet（830等） QVGA 的 psShutXP（预计针对其它机型应该没有效果，这些都是私有的代码）：</p>
+
+<p><a href="/assets/PSShutXP.rar">下载</a></p>
+
+<p>修改后的 psShutXP，硬起功能有效。且关机命令不再是关闭屏幕，而是直接关闭电源（但是RIL，即电话模块，没通知运营商正常关闭，也没有通知应用程序保存数据。所以请使用关机命令前保存好数据）</p>
+
+<p>顺便体贴个 CeleCommand 中的各式各样的关机、重启、硬起代码：</p>
+
+<h1>define IOCTL_HAL_REBOOT 0x101003C</h1>
+
+<h1>define IOCTL_HAL_SHUTDOWN 0x1012000</h1>
+
+<h1>define IOCTL_HAL_COLDBOOT 0x1012594</h1>
+
+<p>extern "C" BOOL WINAPI SetCleanRebootFlag();<br/>
+extern "C" BOOL WINAPI GwesPowerOffSystem();<br/>
+extern "C" BOOL WINAPI ExitWindowsEx(UINT uFlags, DWORD dwReason);<br/>
+extern "C" BOOL KernelIoControl(DWORD dwIoControlCode, PVOID pInBuf, DWORD nInBufSize, PVOID pOutBuf, DWORD nOutBufSize, PDWORD pBytesReturned);<br/>
+HRESULT SHUT(PCTSTR ptzCmd)<br/>
+{<br/>
+ BOOL bResult;<br/>
+ switch (UChrToUpper(*ptzCmd))<br/>
+ {<br/>
+ case 'S':<br/>
+   // HTC<br/>
+   KernelIoControl(IOCTL_HAL_SHUTDOWN, NULL, 0, NULL, 0, NULL);</p>
+
+<p> case 'G':<br/>
+   bResult = GwesPowerOffSystem();<br/>
+   break;</p>
+
+<p> case 'P':<br/>
+   bResult = ExitWindowsEx(EWX_POWEROFF, 0);<br/>
+   break;</p>
+
+<p> case 'K':<br/>
+   keybd_event(VK_OFF, 0, KEYEVENTF_SILENT, 0);<br/>
+   keybd_event(VK_OFF, 0, KEYEVENTF_SILENT | KEYEVENTF_KEYUP, 0);<br/>
+   bResult = TRUE;<br/>
+   break;</p>
+
+<p> case 'H':<br/>
+   // HTC<br/>
+   KernelIoControl(IOCTL_HAL_COLDBOOT, NULL, 0, NULL, 0, NULL);</p>
+
+<p> case 'C':<br/>
+   SetCleanRebootFlag();</p>
+
+<p> case 'R':<br/>
+   bResult = KernelIoControl(IOCTL_HAL_REBOOT, NULL, 0, NULL, 0, NULL);<br/>
+   break;</p>
+
+<p> default:<br/>
+   bResult = ExitWindowsEx(EWX_REBOOT, 0);<br/>
+   break;<br/>
+ }</p>
+
+<p> return !bResult;<br/>
+}</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/omapclock-toggle/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/came-to-life/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="342" data-url="http://yonsm.net/modify-psshutxp-to-support-hard-reset/" data-title="修改 psShutXP 使他的硬起功能生效" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2007-06-25-modify-psshutxp-to-support-hard-reset.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>[转载]Developing without Provisioning Profile</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>[转载]Developing without Provisioning Profile</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2012-09-01">2012-09-01</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#iOS" title="iOS">iOS</a>&nbsp;
+  
+  <a href="/tags/#编程" title="编程">编程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>To develop for the devices one should first obtain a provisioning profile by joining the iPhone Developer Program (which costs $99). However, some simple tricks can be used to make Xcode compile and debug on jailbroken devices without provisioning profiles.</p>
+
+<p>These steps are only tested for Xcode 3.2.x/iPhone SDK 3.x and Xcode 4.3.x/iPhone SDK 5.x. If for some reason you are stuck with Xcode 3.1.x, try <a href="http://iphonesdkdev.blogspot.com/2009/06/use-xcode-312-to-build-sdk-30-app-to-30.html">[1]</a>.<!-- more --></p>
+
+<h3>Compiling</h3>
+
+<p>Performing these steps allows you to use Xcode to compile any applications and deploy it yourself.</p>
+
+<ul>
+<li><p><strong>1.</strong> Create a self-signed code-signing certificate with the name “iPhone Developer” on the “login” (default) keychain using Keychain Access<a href="http://www.iphonedevwiki.net/index.php/Xcode#cite_note-0">[1]</a>.</p></li>
+<li><p><strong>2.</strong> Open /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Info.plist (4.2 or below: /Developer/Platforms/iPhoneOS.platform/Info.plist)</p></li>
+<li><p><strong>3.</strong> Replace all occurrences of XCiPhoneOSCodeSignContext by XCCodeSignContext. There are three of them (XCode Version 3.2.4+).</p></li>
+<li><p><strong>4.</strong> Save the file and restart Xcode.</p></li>
+</ul>
+
+
+<p>If you upgrade the iPhone SDK, you need to perform steps 2 – 4 again.</p>
+
+<h3>Replacing codesign with ldid</h3>
+
+<p>These steps are necessary for debugging, since the entitlement can no longer be inserted by performing steps 1 – 4. To actually debug your app, make sure you have add -gta to <strong>Other Code Signing Flags</strong> of your target.</p>
+
+<ul>
+<li><p><strong>5.</strong> Make sure you have ldid on your Mac<a href="http://www.iphonedevwiki.net/index.php/Xcode#cite_note-1">[2]</a>. Place a copy in /usr/local/bin.</p></li>
+<li><p><strong>6.</strong> Create the Python script /usr/local/bin/ldid3.py. Make it executable. Fill it with:</p>
+
+<h1>!/usr/bin/env python</h1>
+
+<p>from sys import argv
+from subprocess import check_call
+from os.path import basename, splitext, join
+from tempfile import NamedTemporaryFile</p>
+
+<p>app = argv[-1]
+obj_path = join(app, splitext(basename(app))[0])</p>
+
+<p>if '-gta' not in argv:
+    check_call(['/usr/local/bin/ldid', '-S', obj_path])
+else:
+    with NamedTemporaryFile() as f:
+        f.write("""
+&lt;!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>get-task-allow</key>
+    <true/>
+  </dict>
+</plist>
+        """)
+        check_call(['/usr/local/bin/ldid', '-S' + f.name, obj_path])</p></li>
+<li><p><strong>7.</strong> Open iPhoneCodeSign.xcspec.</p>
+
+<ul>
+<li><p>For Xcode 4.3 the file is at: /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS Build System Support.xcplugin/Contents/Resources/iPhoneCodeSign.xcspec</p></li>
+<li><p>For Xcode 4.2 the file is at: /Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/PrivatePlugIns/iPhoneOS Build System Support.xcplugin/Contents/Resources/iPhoneCodeSign.xcspec</p></li>
+<li><p>For older versions the file is at: /Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Plug-ins/iPhoneOS Build System Support.xcplugin/Contents/Resources/iPhoneCodeSign.xcspec</p></li>
+</ul>
+</li>
+<li><p><strong>8.</strong> Replace the line saying CommandLine = "/usr/bin/codesign" with CommandLine = "/usr/local/bin/ldid3.py". It should be around line 12.</p></li>
+<li><p><strong>9.</strong> Save the file and restart Xcode.</p></li>
+</ul>
+
+
+<p>If you upgrade the iPhone SDK, you need to perform steps 8 – 9 again.</p>
+
+<h3>Allowing apps with invalid signatures to be installed</h3>
+
+<p>These steps allow you to install an unsigned app to the device. This method only works for iOS 4.0 or above.</p>
+
+<ul>
+<li><strong>10.</strong> Create a file /var/mobile/tdmtanf on the device, to enable Apple's "TDMTANF bypass" in installd (warning: doing so will also put you in a sandboxed GameCenter<a href="http://www.iphonedevwiki.net/index.php/Xcode#cite_note-2">[3]</a>).</li>
+</ul>
+
+
+<p>If you upgrade the firmware, you need to do step 10 again.</p>
+
+<h2>References</h2>
+
+<ol>
+<li><p> <a href="http://www.iphonedevwiki.net/index.php/Xcode#cite_ref-0">↑</a> Procedures can be found in <a href="http://developer.apple.com/mac/library/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html">http://developer.apple.com/mac/library/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html</a></p></li>
+<li><p> <a href="http://www.iphonedevwiki.net/index.php/Xcode#cite_ref-1">↑</a> If not, you can install from Fink unstable, compile it from git://git.saurik.com/ldid.git, or just download <a href="https://github.com/downloads/rpetrich/ldid/ldid.zip">https://github.com/downloads/rpetrich/ldid/ldid.zip</a></p></li>
+<li><p> <a href="http://www.iphonedevwiki.net/index.php/Xcode#cite_ref-2">↑</a><a href="https://discussions.apple.com/thread/2745420?start=0&amp;tstart=0">https://discussions.apple.com/thread/2745420?start=0&amp;tstart=0</a></p></li>
+</ol>
+
+
+<p>转自：<a href="http://www.iphonedevwiki.net/index.php/Xcode#Developing_without_Provisioning_Profile">iPhoneDev Wiki</a>，大宝库</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/transtext/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/iphone-touch-realization-event/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="763" data-url="http://yonsm.net/developing-without-provisioning-profile/" data-title="[转载]Developing without Provisioning Profile" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2012-08-31-developing-without-provisioning-profile.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

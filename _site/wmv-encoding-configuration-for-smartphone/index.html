@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>用于 Smartphone 上播放的 WMV 编码配置文件</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>用于 Smartphone 上播放的 WMV 编码配置文件</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2005-06-24">2005-06-24</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+</section>
+<section class="post">
+<p>用 Windows Media Encoder 编码，速度不错，不过没有 ProCoder 快。</p>
+
+<p>经过测试，我认为下列配置的 WMV 最适合在 Smartphone 上播放：</p>
+
+<ul>
+<li>视频
+
+<ul>
+<li>格式：WMV9 Video，最棒的编码格式。</li>
+<li>尺寸：224 x 176，适用于全屏播放。勿用 220x176，因为非 16 整数倍的尺寸会导致 BetaPlay 崩溃。</li>
+<li>码率：峰值 VBR （可变码率），平均码率 120 Kbps，最大码率 150 Kbps，保证流畅播放。</li>
+<li>帧率：10 fps，够流畅了。</li>
+</ul>
+</li>
+<li>音频
+
+<ul>
+<li>格式：WMV9.1 Audio，Mono，没的说。</li>
+<li>码率：CBR （固定码率），16 Kbps。</li>
+<li>采样：16 KHz，音质还可以。</li>
+</ul>
+</li>
+</ul>
+
+
+<p>这样的配置编出来的视频音频质量不错，压缩率高，一分钟还没有 1M 数据，一部电影也就 120 M 左右，128M 的 SD 卡搞定——量身定制哦：）</p>
+
+<p><a href="/assets/1119446244.prx">下载配置文件</a></p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/smartphone-program-localization-and-signature-solutions/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/smartphone-program-crack/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="35" data-url="http://yonsm.net/wmv-encoding-configuration-for-smartphone/" data-title="用于 Smartphone 上播放的 WMV 编码配置文件" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2005-06-24-wmv-encoding-configuration-for-smartphone.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

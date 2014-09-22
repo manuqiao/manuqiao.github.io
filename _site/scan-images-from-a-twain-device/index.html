@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>从 TWAIN 设备中扫描图像</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>从 TWAIN 设备中扫描图像</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2006-02-12">2006-02-12</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Win" title="Win">Win</a>&nbsp;
+  
+  <a href="/tags/#编程" title="编程">编程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<h3>一、简介</h3>
+
+<p>TWAIN 数据源管理程序 (DSM) 工业标准的软件库，用于从静态图像设备提取图像。绝大部分的扫描仪和数码相机都提供了 TWAIN 驱动程序，利用统一的 TWAIN 接口，应用程序可以非常方便地从这些设备中获取图像。</p>
+
+<!-- more -->
+
+
+<p></p>
+
+<h3></h3>
+
+<p>二、使用步骤</p>
+
+<p>互联网上关于 TWAIN 编程的中文资料很少，代码更是难找到，因为我不得不仔细阅读了 <a href="http://www.twain.org/">http://www.twain.org/</a> 提供的 TWAIN Specification。下面说说使用 TWAIN 接口获取图像的简要步骤。</p>
+
+<p>Windows 系统中存在一个 TWAIN_32.dll，所有的 TWAIN 操作都是通过这个 DLL 导出的 DSM_Entry 函数来实现的 (说实在话，我个人觉得 TWAIN 接口设计得太差了，看看 MS 的WIA，逻辑上非常清晰)。这个函数的声明如下:</p>
+
+<p>TW_UINT16 FAR PASCAL DSM_Entry(<br/>
+pTW_IDENTITY pOrigin, // Source of message<br/>
+pTW_IDENTITY pDest, // Destination of message<br/>
+TW_UINT32 DG, // Data group ID: DG_xxxx<br/>
+TW_UINT16 DAT, // Data argument type: DAT_xxxx<br/>
+TW_UINT16 MSG, // Message ID: MSG_xxxx<br/>
+TW_MEMREF pData // Pointer to data<br/>
+);</p>
+
+<ol>
+<li>打开 DSM (Data Source Manager: 数据源管理器)</li>
+</ol>
+
+
+<p>TWAIN 是一个数据源管理程序，应用程序首先要使用 MSG_OPENDSM 消息，打开数据源管理器。这里需要指定一个窗口句柄，应用程序应该在此窗口的消息循环中处理 TWAIN 消息 (MSG_PROCESSEVENT)。</p>
+
+<ol>
+<li>选择 DS (Data Source: 数据源)</li>
+</ol>
+
+
+<p>因为一个系统中可能存在多个 TWAIN 设备，因此必须选择一个数据源。选择数据源通常有两种方式: 选择默认数据源 (MSG_GETDEFAULT) 和显示选择数据源对话框，由用户来选择数据源 (MSG_USERSELECT)。</p>
+
+<ol>
+<li>打开 DS</li>
+</ol>
+
+
+<p>使用 MSG_OPENDS 消息打开数据源。</p>
+
+<ol>
+<li>设置参数</li>
+</ol>
+
+
+<p>消息为 MSG_SET，设置各种参数，如获取方式、图像数量等。有些参数由设备驱动支持才有效。</p>
+
+<ol>
+<li>显示扫描界面</li>
+</ol>
+
+
+<p>使用 MSG_ENABLEDS 消息，显示设备驱动提供的用户界面 (UI)。</p>
+
+<ol>
+<li>获取图像</li>
+</ol>
+
+
+<p>如果用户选择扫描什么的，可以在窗口的消息循环中获取到这个事件 (MSG_XFERREADY)。此时，应用程序可以通过 DAT_SETUPFILEXFER 设置文件名，然后用 DAT_IMAGEFILEXFER 获取图像到文件中。</p>
+
+<ol>
+<li>关闭扫描界面</li>
+</ol>
+
+
+<p>在窗口的消息循环中获取到 MSG_CLOSEDSREQ 或 MSG_CLOSEDSOK 消息，可以关闭扫描界面 (MSG_DISABLEDS)。</p>
+
+<ol>
+<li>关闭 DS</li>
+</ol>
+
+
+<p>消息为 MSG_CLOSEDS。</p>
+
+<ol>
+<li>关闭数据源</li>
+</ol>
+
+
+<p>消息为 MSG_CLOSEDSM。</p>
+
+<h3></h3>
+
+<p>三、CTwainHelper 助手类</p>
+
+<p>为了使用方便，我写了一个静态 TWAIN 助手类 CTwainHelper。使用 CTwainHelper 的五个函数，就可以简单地从 TWAIN 设备获取图像到文件中。使用方法如下:</p>
+
+<ol>
+<li> 调用 CTwainHelper::Initialize() 确定是否有可用的设备。</li>
+<li> 在窗口消息循环中，调用 CTwainHelper::ProcessMessage() 处理 TWAIN 消息。</li>
+<li> 要获取图像时，调用 CTwainHelper::GetImage()。</li>
+<li> 如果图像已准备好 (如用户确定扫描图像)，窗口会收到 WM_COMMAND 消息，wParam 为 IDC_TwainHelper。此时应用程序可以调用 CTwainHelper::TransferImage() 获取图像到文件中。</li>
+</ol>
+
+
+<p>具体使用方法请参看示例代码。</p>
+
+<p>CTwainHelper 可以在 Visual C++ 6.x/7.x 工程中使用，支持 UNICODE 编译。因为是静态类，要改写成 C 代码只需要做一点点少量的工作。</p>
+
+<h3>四、后话</h3>
+
+<p>当然，上面只是一种常用的步骤。其实应用程序完全可以自定义所有的步骤，比如不使用 TWAIN 驱动提供扫描对话框而直接扫描，或者扫描图像到内存中等等。详细情况请参考 TWAIN Specification，步骤大同小异，消息和参数千差万别，仔细看看应该很容易的。</p>
+
+<p>如果没有 TWAIN 设备又要进行 TWAIN 程序开发，可以到 TWAIN 官方网站下载 TWAIN Developers Toolkit，安装后会有一个虚拟的 TWAIN 设备。不过应用程序在这个虚拟 TWAIN 设备中正常工作，不代表一定能在实际的 TWAIN 设备正常使用，这点需要注意。以前 CTwainHelper 就碰到过这样的情况 在虚拟 TWAIN 设备中明明是好的，在我的扫描仪上却不能扫描图像。检查后发现，原来设置了不支持的参数。</p>
+
+<p>最后，TWAIN 是 Technology Without A Interesting Name 缩写，直译为没有“没有让人感兴趣名字的技术”，真是一个让人摸不着头脑的名字。</p>
+
+<p>TWAIN 助手类: <a href="/assets/1099925198.rar">CTwainHelper</a> (包含示例代码 35K)<br/>
+TWAIN 官方网站: <a href="http://www.twain.org/">http://www.twain.org</a><br/>
+TWAIN 头文件: <a href="http://www.twain.org/devfiles/twain.h">http://www.twain.org/devfiles/twain.h</a><br/>
+TWAIN Specification: <a href="http://www.twain.org/docs/Spec1_9_197.pdf">http://www.twain.org/docs/Spec1_9_197.pdf</a><br/>
+TWAIN Developers Toolkit: <a href="http://www.twain.org/devfiles/twainkit.exe">http://www.twain.org/devfiles/twainkit.exe</a></p>
+
+<p>[2006.2.22] 下面是更简单的版本，其中的 GetImage 函数内部自动具有消息循环，直到TWAIN对话框完全关闭后才会返回，适合任何场合使用：<br/>
+<a href="/assets/TwainHelper.rar">下载</a></p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/examples-of-pragma/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/ini-language-engine/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="174" data-url="http://yonsm.net/scan-images-from-a-twain-device/" data-title="从 TWAIN 设备中扫描图像" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2006-02-12-scan-images-from-a-twain-device.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

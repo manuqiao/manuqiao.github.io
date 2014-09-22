@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>Windows Mobile 下面最通用的浏览文件对话框</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>Windows Mobile 下面最通用的浏览文件对话框</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2006-11-18">2006-11-18</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#编程" title="编程">编程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>M$ Windows Mobile 一大不爽的东西就是 GetOpenFileName 和 GetSaveFileName 函数非常的乱：WM5 上提供了一个 GetOpenFileNameEx 来浏览图片；PPC2003/WM5 下极其简单，只能使用非常浅的文件夹（虽然设计上的考虑，但也太滥了）；SP2003 下压根就没有这些函数。于是只好自己写可以个函数非常通用的函数，Windows Mobile 2003/5.0 SP/PPC 下均可正常运行并获得最佳体验。</p>
+
+<p>补充一下标题，还是最懒的方法，真正的东西一点都不写：）</p>
+
+<p>支持一下功能：</p>
+
+<ul>
+<li><p>简单的参数</p></li>
+<li><p>保存最后文件夹位置（似乎 RFileShell 不响应咱的请求）</p></li>
+<li><p>根据不同的运行环境，自动使用最佳的浏览对话框函数</p></li>
+</ul>
+
+
+<p>策略：</p>
+
+<ul>
+<li><p>如果找到 Resco 的 RFileShell.dll （安装过 Resco Explorer、PhotoViewer 等软件），则使用RFileShell.dll 的浏览文件函数。它的是最棒的，精神奖励一下！</p></li>
+<li><p>其次，使用 Windows Mobile 5.0 的 GetOpenFileNameEx，只有打开，没有保存的</p></li>
+<li><p>再次，使用 tGetFile 的函数，我都做好了完美本地化了</p></li>
+<li><p>最后，使用 CoreDll 的 GetOpenFileName 和 GetSaveFileName</p></li>
+<li><p>实在不行了，又在 Smartphone 2003 下，提示一下用户去下载 RFileShell 或 tGetFile 吧，简单地返回 \My Documents\AppName.Ext 的文件名吧，顺便问问用户是否接受：）</p></li>
+</ul>
+
+
+<p>真是不费一枪一弹啊……<!-- more --></p>
+
+<p>以下代码，版权所有 (C) Yonsm.NET，保留所有权利。<br/>
+如需在程序中使用，请留言或发送 Mail 告知。</p>
+
+<p>[codes=cpp]<br/>
+// 资源<br/>
+IDS_Open "打开"<br/>
+IDS_Save "保存"<br/>
+IDS_GetFileName "没有找到浏览文件名功能的函数库，要使用“%s”作为文件名吗?。\n\n提示: 您可以从下列网站中获得相关的函数库:\n\nRFileShell: http://www.resco.net/downloads/byplatforms.asp\n\ntGetFile:\thttp://www.tillanosoft.com/ce/tgetfile.html"</p>
+
+<p>// CReg<br/>
+// STR_AppName<br/>
+.....<br/>
+[/codes]</p>
+
+<p>[codes=cpp]<br/>
+// Declaration</p>
+
+<h1>if (_WIN32_WCE &lt; 0x500)</h1>
+
+<p>typedef struct tagOPENFILENAMEEX<br/>
+{<br/>
+   // Fields which map to OPENFILENAME<br/>
+   DWORD        lStructSize;<br/>
+   HWND         hwndOwner;<br/>
+   HINSTANCE    hInstance;<br/>
+   LPCTSTR      lpstrFilter;<br/>
+   LPTSTR       lpstrCustomFilter;<br/>
+   DWORD        nMaxCustFilter;<br/>
+   DWORD        nFilterIndex;<br/>
+   LPTSTR       lpstrFile;<br/>
+   DWORD        nMaxFile;<br/>
+   LPTSTR       lpstrFileTitle;<br/>
+   DWORD        nMaxFileTitle;<br/>
+   LPCTSTR      lpstrInitialDir;<br/>
+   LPCTSTR      lpstrTitle;<br/>
+   DWORD        Flags;<br/>
+   WORD         nFileOffset;<br/>
+   WORD         nFileExtension;<br/>
+   LPCTSTR      lpstrDefExt;<br/>
+   LPARAM       lCustData;<br/>
+   LPOFNHOOKPROC lpfnHook;<br/>
+   LPCTSTR      lpTemplateName;</p>
+
+<p>   // Extended fields<br/>
+   DWORD       dwSortOrder;<br/>
+   DWORD       ExFlags;<br/>
+}<br/>
+OPENFILENAMEEX, *LPOPENFILENAMEEX;</p>
+
+<p>// Sort order<br/>
+typedef enum tagOFN_SORTORDER<br/>
+{<br/>
+   OFN_SORTORDER_AUTO,<br/>
+   OFN_SORTORDER_DATE,<br/>
+   OFN_SORTORDER_NAME,<br/>
+   OFN_SORTORDER_SIZE,<br/>
+   OFN_SORTORDER_ASCENDING = 0x00008000</p>
+
+<p>}<br/>
+OFN_SORTORDER;</p>
+
+<p>// Extended Flags<br/>
+typedef enum tagOFN_EXFLAG<br/>
+{<br/>
+   OFN_EXFLAG_DETAILSVIEW          = 0x00000001,<br/>
+   OFN_EXFLAG_THUMBNAILVIEW        = 0x00000002,<br/>
+   OFN_EXFLAG_LOCKDIRECTORY        = 0x00000100,<br/>
+   OFN_EXFLAG_NOFILECREATE         = 0x00000200,<br/>
+   OFN_EXFLAG_HIDEDRMPROTECTED     = 0x00010000,<br/>
+   OFN_EXFLAG_HIDEDRMFORWARDLOCKED = 0x00020000<br/>
+}<br/>
+OFN_EXFLAG;</p>
+
+<h1>endif</h1>
+
+<p>typedef BOOL (<em>PGETFILENAME)(LPOPENFILENAMEEX pOfn);<br/>
+typedef BOOL (</em>TGETFILENAME)(BOOL bSave, LPOPENFILENAMEEX pOfn);</p>
+
+<p>// Module name and procedure table<br/>
+enum {MP_RFileShell, MP_AygShell, MP_tGetFile, MP_CoreDll};<br/>
+const struct {PCTSTR ptzModName; PCTSTR ptzOpenProc; PCTSTR ptzSaveProc;} c_sModProc[] =<br/>
+{<br/>
+   {TEXT("RFileShell"), TEXT("RShellGetOpenFileName"), TEXT("RShellGetSaveFileName")},<br/>
+   {TEXT("AygShell"), TEXT("GetOpenFileNameEx"), TEXT("GetSaveFileNameEx")},<br/>
+   {TEXT("tGetFile"), TEXT("tGetFile"), TEXT("tGetFile")},<br/>
+   {TEXT("CoreDll"), TEXT("GetOpenFileNameW"), TEXT("GetSaveFileNameW")},<br/>
+};</p>
+
+<p>[/codes]</p>
+
+<p>[codes=cpp]</p>
+
+<p>// Browse for file name</p>
+
+<h1>define OFN_COMMON (0x11000000 | OFN_HIDEREADONLY)</h1>
+
+<p>BOOL CHelper::GetFileName(HWND hParent, PTSTR ptzPath, UINT uFilterRes, BOOL bSave)<br/>
+{<br/>
+   // Fill structure<br/>
+   OPENFILENAMEEX ofn = {0};<br/>
+   ofn.hwndOwner = hParent;<br/>
+   ofn.hInstance = g_hInst;<br/>
+   ofn.lpstrFile = ptzPath;<br/>
+   ofn.nMaxFile = MAX_PATH;<br/>
+   ofn.Flags = bSave ? (OFN_COMMON | OFN_OVERWRITEPROMPT) : (OFN_COMMON | OFN_PATHMUSTEXIST);</p>
+
+<p>   ofn.ExFlags = OFN_EXFLAG_THUMBNAILVIEW;<br/>
+   ofn.dwSortOrder = OFN_SORTORDER_NAME | OFN_SORTORDER_ASCENDING;</p>
+
+<p>   // Get initialize folder from control<br/>
+   TCHAR tzPath[MAX_PATH];<br/>
+   if (_IsIntRes(ptzPath))<br/>
+   {<br/>
+       ofn.lpstrFile = tzPath;<br/>
+       GetDlgItemText(hParent, (UINT) ptzPath, tzPath, MAX_PATH);<br/>
+   }</p>
+
+<p>   // Load extension filter<br/>
+   TCHAR tzFilter[MAX_PATH];<br/>
+   _LoadStr(uFilterRes, tzFilter);<br/>
+   ofn.lpstrFilter = UStrRep(tzFilter, '|', 0);</p>
+
+<p>   // Parse default extension<br/>
+   TCHAR tzDefExt[MAX_NAME];<br/>
+   PTSTR p = UStrChr(tzFilter, 0) + 1;<br/>
+   if (p = UStrChr(p, '.'))<br/>
+   {<br/>
+       UStrCopy(tzDefExt, p);<br/>
+       if (p = UStrChr(tzDefExt, ';')) *p = 0;<br/>
+       ofn.lpstrDefExt = tzDefExt;<br/>
+   }</p>
+
+<p>   // Read initialize folder<br/>
+   CReg reg;<br/>
+   TCHAR tzInitDir[MAX_PATH];<br/>
+   if (reg.GetStr(TEXT("InitDir"), tzInitDir))<br/>
+   {<br/>
+       ofn.lpstrInitialDir = tzInitDir;<br/>
+   }<br/>
+   else<br/>
+   {<br/>
+       ofn.lpstrInitialDir = TEXT("\");<br/>
+   }</p>
+
+<p>   // Get title<br/>
+   TCHAR tzTitle[MAX_NAME];<br/>
+   ofn.lpstrTitle = _LoadStr(bSave ? IDS_Save : IDS_Open, tzTitle);</p>
+
+<p>   // Try all library<br/>
+   UINT i = 0;<br/>
+   BOOL bResult = FALSE;<br/>
+   for (; i &lt; <em>NumOf(c_sModProc); i++)<br/>
+   {<br/>
+       HMODULE hModule = LoadLibrary(c_sModProc</em>.ptzModName);<br/>
+       if ((hModule == NULL) &amp;&amp; (i == MP_RFileShell))<br/>
+       {<br/>
+           // Lookup Resco Explorer install folder<br/>
+      &nbs;
+p;    TCHAR tzModule[MAX_PATH];<br/>
+           CReg rfs(TEXT("SOFTWARE\Apps\Resco Explorer"), HKEY_LOCAL_MACHINE);<br/>
+           if (rfs.GetStr(TEXT("InstallDir"), tzModule))<br/>
+           {<br/>
+               UDirMakePath(tzModule, c_sModProc<em>.ptzModName);<br/>
+               hModule = LoadLibrary(tzModule);<br/>
+           }<br/>
+       }<br/>
+       if (hModule)<br/>
+       {<br/>
+           PGETFILENAME pGetFileName = (PGETFILENAME) GetProcAddress(hModule, bSave ? c_sModProc</em>.ptzSaveProc : c_sModProc_.ptzOpenProc);<br/>
+           if (pGetFileName)<br/>
+           {<br/>
+               ofn.lStructSize = (i == MP_AygShell) ? sizeof(OPENFILENAMEEX) : sizeof(OPENFILENAME);<br/>
+               bResult = (i == MP_tGetFile) ? ((TGETFILENAME) pGetFileName)(bSave, &ofn;) : pGetFileName(&ofn;);<br/>
+               FreeLibrary(hModule);<br/>
+               break;<br/>
+           }<br/>
+           FreeLibrary(hModule);<br/>
+       }<br/>
+   }</p>
+
+<p>   // Prompt for library<br/>
+   if ((i == MP_CoreDll) &amp;&amp; !IsPPC() &amp;&amp; !IsWM5() &amp;&amp; !bResult)<br/>
+   {<br/>
+       TCHAR tzStr[MAX_PATH];<br/>
+       TCHAR tzInfo[MAX_STR];<br/>
+       UStrPrint(ofn.lpstrFile, TEXT("\My Documentss\%s.%s"), STR_AppName, ofn.lpstrDefExt);<br/>
+       UStrPrint(tzInfo, _GetStr(IDS_GetFileName), ofn.lpstrFile);<br/>
+       bResult = (MessageBox(hParent, tzInfo, tzTitle, MB_ICONQUESTION | MB_YESNO) == IDYES);<br/>
+   }</p>
+
+<p>   if (bResult)<br/>
+   {<br/>
+       // Set control text<br/>
+       if (_IsIntRes(ptzPath))<br/>
+       {<br/>
+           SetFocus(GetDlgItem(hParent, (UINT) ptzPath));<br/>
+           SetDlgItemText(hParent, (UINT) ptzPath, tzPath);<br/>
+       }</p>
+
+<pre><code>   // Save initialize folder  
+   p = UStrRChr(ofn.lpstrFile, '\\');  
+   if (p)  
+   {  
+       *p = 0;  
+       reg.SetStr(TEXT("InitDir"), ofn.lpstrFile);  
+       *p = '\\';  
+   }  
+</code></pre>
+
+<p>   }</p>
+
+<p>   return bResult;<br/>
+[/codes]</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/xdos/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/menu-bar-on-windows-mobile/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="276" data-url="http://yonsm.net/common-file-dialog-on-windows-mobile/" data-title="Windows Mobile 下面最通用的浏览文件对话框" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2006-11-18-common-file-dialog-on-windows-mobile.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

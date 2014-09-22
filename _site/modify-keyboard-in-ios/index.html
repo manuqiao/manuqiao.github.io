@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>在 iPhone/iPad 中随意修改数字键盘按钮</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>在 iPhone/iPad 中随意修改数字键盘按钮</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2010-09-02">2010-09-02</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#iOS" title="iOS">iOS</a>&nbsp;
+  
+  <a href="/tags/#编程" title="编程">编程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>一、起因</p>
+
+<p>iPhone 的键盘，特别是数字键盘，往往不能满足程序的输入需要。最典型的例子就是在数字键盘上添加一个“.”，用来输入小数点。安装 iPhone SDK 官方的观点，如果要使用小数点键盘，那只好使用数字和符号键盘，但那样没个按键很小，且不需要的按键太多。</p>
+
+<!-- more -->
+
+
+<p></p>
+
+<p>二、现有方案</p>
+
+<p>针对这种情况，最早的解决方案，请参考这里：<a href="http://www.cnblogs.com/mac_arthur/archive/2010/05/18/1738363.html">http://www.cnblogs.com/mac_arthur/archive/2010/05/18/1738363.html</a>。使用的是 以下代码来检测一个 Notification。</p>
+
+<p>[[NSNotificationCenter defaultCenter] addObserver:self <br/>
+                                         selector:@selector(addCustomKeyBoardButton)<br/>
+                                                name:UIKeyboardWillShowNotification<br/>
+                                              object:nil];</p>
+
+<p>这种方法，在 iOS 4.0 后失效了，原因有两个，一是UIKeyboardWillShowNotification的时候，键盘根本没有创建出来;另外，Class Name 也被外包了一层，叫做UIPeripheralHostView。</p>
+
+<p>于是又有了一种改进的方案，请看这里：<a href="http://www.neoos.ch/news/46-development/54-uikeyboardtypenumberpad-and-the-missing-return-key">http://www.neoos.ch/news/46-development/54-uikeyboardtypenumberpad-and-the-missing-return-key</a>。主要的改进是在UIKeyboardDidShowNotification的通知消息中来修改键盘。但正如作者所说，这里有个不完美的情况，只能等键盘动画显示完成之后，才能添加显示我们的东西，视觉效果不好。</p>
+
+<p>三、改进方案</p>
+
+<p>经过试验，找到一个比较完美的方案：在 UITextField 的becomeFirstResponder和resignFirstResponder中修改键盘。</p>
+
+<p>定以一个类，假如叫做 KBCustomTextField : UITextField，在这个类中加入一下代码：</p>
+
+<p>//<br/>
+- (BOOL)becomeFirstResponder<br/>
+{<br/>
+ BOOL ret = [super becomeFirstResponder];<br/>
+ [self modifyKeyView:@"NumberPad-Empty" display:@"." represent:@"." interaction:@"String"];<br/>
+ return ret;<br/>
+}</p>
+
+<p>//<br/>
+- (BOOL)resignFirstResponder<br/>
+{<br/>
+ BOOL ret = [super resignFirstResponder];<br/>
+ [self modifyKeyView:@"NumberPad-Empty" display:nil represent:nil interaction:@"None"];<br/>
+ return ret;<br/>
+}</p>
+
+<p>modifyKeyView 的实现可以参看附件。我使用的是循环查找UIKBKeyView类，这是Apple 的 Private API（私有API的声明可以在这里找：<a href="http://github.com/kennytm/iphone-private-frameworks/tree/master/UIKit/">http://github.com/kennytm/iphone-private-frameworks/tree/master/UIKit/</a>），不确信能否通过 App Store 的审核：）</p>
+
+<p>更近一步地，我完善了一下 KBCustomTextField，通过这个类，非常方便地就可以做到自定义输入键盘：</p>
+
+<p><a href="/assets/1283431378_9792baf4.zip">KBCustom.zip</a></p>
+
+<ol>
+<li><p>使用小数点和数字键盘：非常简单，只要在 IB 中把 UITextField 的类改成KBCustomTextField，就OK了，不用一行代码，效果如下图：<br/>
+<a href="/assets/1283431378_38117112.png"><img src="/assets/1283431378_38117112.png" alt="" /></a></p></li>
+<li><p>在键盘的按键上添加一个文字按钮（并指定处理动作）：设置KBCustomTextField.kbDelegate，实现这两个函数即可：</p></li>
+</ol>
+
+
+<p>// [Yonsm] Handle keyboard show<br/>
+- (void)keyboardShow:(KBCustomTextField *)sender<br/>
+{<br/>
+ [sender addCustomButton:@"NumberPad-Empty" title:@"DONE" target:self action:@selector(onButton:)];<br/>
+}</p>
+
+<p>// [Yonsm] Handle keyboard hide<br/>
+- (void)keyboardHide:(KBCustomTextField *)sender<br/>
+{<br/>
+ [sender delCustomButton:@"NumberPad-Empty"];<br/>
+}</p>
+
+<p><a href="/assets/1283431378_98952583.png"><img src="/assets/1283431378_98952583.png" alt="" /></a></p>
+
+<ol>
+<li>更近一步地，这两个 Delegate 函数中，你只要通过 name 来查找到想要修改的 UIKBKeyView，就可以随便修改它。name 可以通过 KBCustomTextField 的#define _LOG_KEY_VIEW来列出所有的按键名称。name 为 nil 则找任何的 UIKBKeyView（可以用他的 .superview 来找到整个键盘View，做更多的处理）。<br/>
+<a href="/assets/1283431378_246664d4.png"><img src="/assets/1283431378_246664d4.png" alt="" /></a></li>
+</ol>
+
+
+<p>下面是 iPhone 数字键盘的前面10个按键（后面忘了打出来了：）</p>
+
+<p>Found View: UIPeripheralHostView<br/>
+Found View: UIKeyboardAutomatic<br/>
+Found View: UIKeyboardImpl<br/>
+Found View: UIKeyboardLayoutStar<br/>
+Found View: UIKBKeyplaneView<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-1  representedString=1  displayString=1  displayType=NumberPad  interactionType=String  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-2  representedString=2  displayString=2/ABC  displayType=NumberPad  interactionType=String  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-3  representedString=3  displayString=3/DEF  displayType=NumberPad  interactionType=String  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-4  representedString=4  displayString=4/GHI  displayType=NumberPad  interactionType=String  displayRowHint=Row2<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-6  representedString=6  displayString=6/MNO  displayType=NumberPad  interactionType=String  displayRowHint=Row2<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-7  representedString=7  displayString=7/PQRS  displayType=NumberPad  interactionType=String  displayRowHint=Row3<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-8  representedString=8  displayString=8/TUV  displayType=NumberPad  interactionType=String  displayRowHint=Row3<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-9  representedString=9  displayString=9/WXYZ  displayType=NumberPad  interactionType=String  displayRowHint=Row3<br/>
+Found View: UIKBKeyView<br/>
+ name=NumberPad-Empty &nbs;
+p;representedString=  displayString=  displayType=NumberPad  interactionType=None  displayRowHint=Row4</p>
+
+<p>代码对 iPad 也有效，当然 Key Name 和  Type 不一样，下面是 iPad 数字键盘的Log：</p>
+
+<p>Found View: UIPeripheralHostView<br/>
+Found View: UIKeyboardAutomatic<br/>
+Found View: UIKeyboardImpl<br/>
+Found View: UIKeyboardLayoutStar<br/>
+Found View: UIKBKeyplaneView<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-1  representedString=1  displayString=1  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-2  representedString=2  displayString=2  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-3  representedString=3  displayString=3  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-4  representedString=4  displayString=4  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-5  representedString=5  displayString=5  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-6  representedString=6  displayString=6  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-7  representedString=7  displayString=7  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-8  representedString=8  displayString=8  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-9  representedString=9  displayString=9  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Digit-0  representedString=0  displayString=0  displayType=String  interactionType=String-Popup  displayRowHint=Row1<br/>
+Found View: UIKBKeyView<br/>
+ name=Hyphen-Minus  representedString=-  displayString=-  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Solidus  representedString=/  displayString=/  displayType=String  interactionType=String-Popup  displayRowHint=Row2<br/>
+Found View: UIKBKeyView<br/>
+ name=Colon  representedString=:  displayString=:  displayType=String  interactionType=String-Popup  displayRowHint=Row2<br/>
+Found View: UIKBKeyView<br/>
+ name=Semicolon  representedString=;  displayString=;  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Left-Parenthesis  representedString=(  displayString=(  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Right-Parenthesis  representedString=)  displayString=)  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Primary-Currency-Sign  representedString=$  displayString=$  displayType=DynamicString  interactionType=String-Popup<br/>
+Found View: UIKBKeyView<br/>
+ name=Ampersand  representedString=&amp;  displayString=&amp;  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Commercial-At  representedString=@  displayString=@  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Full-Stop  representedString=.  displayString=.  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Comma  representedString=,  displayString=,  displayType=String  interactionType=String-Popup  displayRowHint=Row3<br/>
+Found View: UIKBKeyView<br/>
+ name=Question-Mark  representedString=?  displayString=?  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Exclamation-Mark  representedString=!  displayString=!  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Apostrophe  representedString='  displayString=’  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Quotation-Mark  representedString="  displayString=”  displayType=String  interactionType=String-Popup  <br/>
+Found View: UIKBKeyView<br/>
+ name=Delete-Key  representedString=Delete  displayString=delete  displayType=Delete  interactionType=Delete  <br/>
+Found View: UIKBKeyView<br/>
+ name=Return-Key  representedString=<br/>
+interactionType=Return  displayRowHint=Row2<br/>
+Found View: UIKBKeyView<br/>
+ name=Undo-Key  representedString=undo  displayString=undo  displayType=Command  interactionType=Undo  displayRowHint=Row3<br/>
+Found View: UIKBKeyView<br/>
+ name=More-Key  representedString=More  displayString=more  displayType=More  interactionType=More  displayRowHint=Row4<br/>
+Found View: UIKBKeyView<br/>
+ name=Unlabeled-Space-Key  representedString=   displayString=  displayType=Space  interactionType=Space  <br/>
+Found View: UIKBKeyView<br/>
+ name=More-Key  representedString=More  displayString=more  displayType=More  interactionType=More  displayRowHint=Row4<br/>
+Found View: UIKBKeyView<br/>
+ name=Dismiss-Key  representedString=Dismiss  displayString=Dismiss  displayType=Dismiss  interactionType=Dismiss  <br/>
+Found View: UIKBKeyView<br/>
+ name=Shift-Key  representedString=Shift  displayString=shift  displayType=Shift  interactionType=Shift  displayRowHint=Row3<br/>
+Found View: UIKBKeyView<br/>
+ name=Shift-Key  representedString=Shift  displayString=shift  displayType=Shift  interactionType=Shift  displayRowHint=Row3</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/plans-to-ride-around-the-qinghai-lake/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/north-western-tour/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="516" data-url="http://yonsm.net/modify-keyboard-in-ios/" data-title="在 iPhone/iPad 中随意修改数字键盘按钮" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2010-09-02-modify-keyboard-in-ios.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

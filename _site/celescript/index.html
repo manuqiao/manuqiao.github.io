@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>CeleScript - 方便实用、居家旅行、莫名其妙的批处理脚本解释引擎</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>CeleScript - 方便实用、居家旅行、莫名其妙的批处理脚本解释引擎</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2008-04-27">2008-04-27</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#软件" title="软件">软件</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#Win" title="Win">Win</a>&nbsp;
+  
+  <a href="/tags/#分享" title="分享">分享</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>CeleScript 是一个从 PE 的 XCMD 和为 Windows Mobile 上的 CeleCmd 演变而来的一个东西，我自己用了很久了，语法比较莫名其妙，但用起来比较方便实用。主要用来做一些安装软件、系统设置等自动化操作。基本上的代码都是以前为 Windows Mobile 写的 CeleCmd 转换而来，没有花太多精力，基本上属副产品：）</p>
+
+<!-- more -->
+
+
+<p></p>
+
+<p>下载：<a href="/assets/CeleScript.3.0.820.zip">CeleScript 3.0.820</a></p>
+
+<p>2009.1.11 更新<br/>
+PC 上的一键安装工具包：<br/>
+工具包（常用工具）：http://yonsm.net/up/CeleTools.exe <br/>
+扩展工具包（调试分析工具）：http://yonsm.net/up/CeleTools+.exe<br/>
+软件包（普通用户通用工具）：http://yonsm.net/up/CeleUtilities.exe</p>
+
+<hr />
+
+<p>CeleScript 使用说明<br/>
+注意：此帮助文件未经仔细校对，可能有部分命令解释有误。若有谬错之处，敬请指正。</p>
+
+<p>[简介] [特点] [安装] [使用] [菜单] [命令] [问答] [许可] [致谢]</p>
+
+<p>一、简介<br/>
+欢迎使用功能强大、灵活方便的 CeleScript 命令解释引擎。您只要编写简单的 CeleScript 命令文件，就能在 Windows 中实现灵活强大的批处理功能。<br/>
+[目录]</p>
+
+<p>二、特点<br/>
+性能高效：命令解释引擎精巧构思，短小精干，运行迅速。<br/>
+　 <br/>
+功能强大：内置支持多种命令，使用这些命令可以编写出功能强大的批处理脚本。<br/>
+　 <br/>
+扩展支持：支持调用外部 EXE 和 DLL 函数。<br/>
+　 <br/>
+使用灵活：支持格式统一的命令行参数和命令文件，可以在命令行、命令文件和程序界面中，调用 CeleScript 的各种功能。<br/>
+　 <br/>
+其它功能：支持导入标准的和扩展的 Windows 注册表脚本脚本。<br/>
+　 <br/>
+方便调试：在程序界面中执行命令或命令文件，可以在日志窗口中跟踪脚本执行的流程和结果，方面发现命令脚本的问题。<br/>
+　 <br/>
+广泛支持：一个可执行文件，同时支持 Windows 2000/XP/2003/Vista，并且适用于 Windows XPE 中作为登录解释脚本引擎。<br/>
+　 <br/>
+源码公开：源代码公开，方便更改定制和功能增强，且在源代码中增加扩展命令支持非常容易。 <br/>
+[目录]</p>
+
+<p>三、安装<br/>
+安装：绿色软件，直接运行 CeleScript.exe 即可使用。如果要关联 .csc 命令文件，可以在在程序中双击 CeleScript 的图标。<br/>
+　 <br/>
+卸载：CeleScript 是“绿色”软件，删除 CeleScript.exe 即可卸载。如果选择了关联 .csc 命令文件，请在程序中再次双击 CeleScript 的图标取消文件关联。 <br/>
+[目录]</p>
+
+<p>四、使用<br/>
+使用方式<br/>
+　<br/>
+直接执行本程序，将显示允许输入命令和现实执行结果的对话框，您可以直接在程序界面上执行各种操作。<br/>
+　 <br/>
+在命令行参数中使用，例如，要创建快捷方式，执行“CeleScript.exe LINK %M\程序\测试程序.lnk,%W\Test.exe”即可。<br/>
+　 <br/>
+在命令文件中使用，例如，“CeleScript.exe LOAD C:\Test*.csc”。<br/>
+　 <br/>
+如果省略命令关键字，将自动判断参数，且支持通配符和子目录递归查找匹配文件（前导“!”）。如 CeleScript.exe %C*.csc。CeleScript 将按以下规则解析执行：</p>
+
+<p>.inf：安装 INF 文件。 <br/>
+.csc、.reg：执行 CeleScript 的 LOAD 命令。 <br/>
+.dll、.ocx、.ax：执行 CeleScript 的 CDLL 命令。 <br/>
+.exe、.com、bat、cmd：运行可执行文件和批处理文件。</p>
+
+<p>命令格式</p>
+
+<p>CeleScript 的命令是一行字符串，以大写的四字符关键字开始，紧跟着的是空格或制表符，后面是命令的参数。<br/>
+　 <br/>
+参数之间用逗号“,”分隔，如果在参数中要使用逗号本身，则需要使用“%,”的转义字符。<br/>
+　 <br/>
+不同的命令的参数格式不一致，详细请参考 命令。<br/>
+　 <br/>
+变量与宏</p>
+
+<p>CeleScript 读取一条个命令文件后，首先展开其中用“%”号前导的宏：<br/>
+　<br/>
+E    当前脚本的完整路径 <br/>
+C    当前脚本的目录 <br/>
+T    当前时间 <br/>
+D    当前日期 <br/>
+X    最后一条命令的返回值，十六进制格式，如 0XFFFFFFFF <br/>
+x    最后一条命令的返回值，十进制格式，如 -1 <br/>
+0-9  用户变量值，用户可以通过 EVAL 命令设置变量 0 到 9 的内容 <br/>
+A    可能是 \Application Data <br/>
+Y    可能是 \My Documents <br/>
+S    可能是 \Windows\Startup <br/>
+W    可能是 \Windows <br/>
+P    可能是 \Windows\“开始”菜单\程序 <br/>
+M    可能是 \Windows\“开始”菜单 <br/>
+F    可能是 \Program Files <br/>
+O    可能是 [User Name]\SendTo <br/>
+R    回车字符 <br/>
+N    换行字符</p>
+
+<h1>十六进制字符，后面紧跟这四个十六进制字符，如“%#FEFF”</h1>
+
+<p>%    由于“%”用于宏转义，如果需要在参数中确实需要使用“%”本身，则需要用两个“%”代替，如“%1”要写成“%%1”。 <br/>
+,    CeleScript 把“,”作为参数分隔符，与“%”类似，如果在参数中需要使用“,”本身，则需要使用“%,”的形式。<br/>
+　 <br/>
+命令文件</p>
+
+<p>CeleScript 的命令文件是由 CeleScript 命令组成的命令集合。<br/>
+　<br/>
+每条命令单独一行。 <br/>
+命令文件中可以使用注释，注释必须单独一行，以“;”作为注释行开始。 <br/>
+命令文件支持 UNICODE 格式和 ASCII 格式，为了更高的执行效率，推荐使用 UNICODE 格式。 <br/>
+命令文件中可以杂合 Windows Registry Script 内容，CeleScript 会把 Registry Script 导入到注册表。但是使用这种方式必须十分小心，因为执行过程中，Registry Script 部分会被修改（仅在内存中），可能导致 CALL 和 GOTO 无法正常使用（使用原则：最新会被执行到的 Registry Script 放在文件最后的子过程中，这样就能避免问题）。 <br/>
+[目录]</p>
+
+<p>五、界面<br/>
+执行：执行命令。<br/>
+　 <br/>
+关于：显示程序版本、版权和作者信息。<br/>
+　 <br/>
+退出：退出 CeleScript 程序。<br/>
+　 <br/>
+清除日志：单击 CeleScript 图标。<br/>
+　 <br/>
+文件关联：双击 CeleScript 图标。 <br/>
+[目录]</p>
+
+<p>六、命令<br/>
+[LOAD] [BATC] [IFEX] [ELSE] [CALL] [GOTO] [PROC] [ENDP] [PLAY] [BEEP] [MSGX] [DLGX] [LINK] [FILE] [REGX] [ENVI] [SEND] [WAIT] [KILL] [SHUT] [EXEC] [CDLL] [EVAL] [ASOC] [CCUI]</p>
+
+<p>具体使用方法请参看附件中的 Resource\CeleScript.htm，或者在 CeleScript 中点击标题栏右上角的问号按钮</p>
+
+<p>七、问答<br/>
+在 XPE 中，如何使用 CeleScript 作为登录解释引擎？</p>
+
+<p>我也不知道。 <br/>
+[目录]</p>
+
+<p>八、许可<br/>
+本程序及其源代码是可以免费获取的。<br/>
+　 <br/>
+如果您使用或修改了其中任何的源代码，则必须把使用这些源代码的项目以及项目内的所有源代码和文档公开。否则禁止使用本程序源代码的任何部分。<br/>
+　 <br/>
+您可以复制、分发和传播无限制数量的软件产品，但您必须保证每一份复制、分发和传播都必须是完整和真实的，包括所有有关本软件产品的软件、电子文档，版权和商标宣言。<br/>
+　 <br/>
+作者特此申明对本软件产品之使用不提供任何保证，不对任何用户保证本软件产品的适用性，不保证无故障产生；亦不对任何用户使用此软件所遭遇到的任何理论上的或</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/windows-mobile-wifi-switch-code/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/using-touch-diamond/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="413" data-url="http://yonsm.net/celescript/" data-title="CeleScript - 方便实用、居家旅行、莫名其妙的批处理脚本解释引擎" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2008-04-27-celescript.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

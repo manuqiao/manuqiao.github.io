@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>REBOOT Reload - 可安装在优盘的 Windows 和 DOS 启动盘</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>REBOOT Reload - 可安装在优盘的 Windows 和 DOS 启动盘</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2007-08-04">2007-08-04</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#资源" title="资源">资源</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#分享" title="分享">分享</a>&nbsp;
+  
+  <a href="/tags/#折腾" title="折腾">折腾</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>欢迎使用功能强大的 REBOOT （Rescue Environment Boot Disk） 系统应急启动盘！</p>
+
+<p>一、简介</p>
+
+<p>REBOOT 包含 RWIN 和 RDOS 两部分，分别是基于 Windows XP Professional SP2 和 MS-DOS 7.1 而制作的。</p>
+
+<p>RWIN 是基于 Windows XP Professional SP2 的定制独立启动环境，能在绝大部分电脑中不依赖任何硬盘文件而引导进入 Windows XP Professional 操作界面。</p>
+
+<p>   ◎ 不依赖任何硬盘文件，独立启动。<br/>
+   ◎ 支持绝大部分类型的硬盘和 USB 存储设备。<br/>
+   ◎ 内置网络功能，并带有 PPPoE 宽带连接支持。<br/>
+   ◎ 内置绿色系统维护工具，功能强大，定制方便。<br/>
+   ◎ 支持安装到各种启动媒介，包括各种硬盘、光盘和优盘。<br/>
+   ◎ 基于 Windows XP Professional SP2 制作，支持 Windows Vista 安装。<br/>
+   ◎ 内置常用系统工具，且整理的井井有条。可直接运行，无须自解压到临时文件夹。<br/>
+   ◎ 启动速度飞快，登录后非常快速就能进入桌面（且启动画面的显示方式很漂漂哦）。<br/>
+   ◎ 内置大多数网卡驱动 CAB 包（包括最新的 Realtek 8111 和 Intel Pro1000 等），且启动时智能释放所需的驱动，然后自动删除 CAB 包，提供更多的可写空间。<!-- more --></p>
+
+<p>RDOS 是基于 MS-DOS 7.1 的超强启动盘，支持以下几种启动选择：</p>
+
+<p>   ◎ 干净引导：不加载任驱动和程序程序<br/>
+   ◎ 正常引导：加载常规驱动和应用程序<br/>
+   ◎ 光驱支持：加载光驱设备驱动程序<br/>
+   ◎ 优盘支持：加载优盘设备驱动程序<br/>
+   ◎ 网络支持：加载 GHOST 网络驱动程序<br/>
+   ◎ 网络客户：加载 MICROSOFT 网络客户端程序<br/>
+   ◎ 备份系统：备份第一个分区到第三个分区的 GHOST\SYSTEM.GHO<br/>
+   ◎ 恢复系统：恢复第三个分区的 \GHOST\SYSTEM.GHO 到第一个分区</p>
+
+<p>下面是可用的命令列表</p>
+
+<p>ATTRIB    添加或删除文件属性<br/>
+CHOICE    批处理选择命令<br/>
+COMMAND   命令行解释程序<br/>
+DEBUG     调试实用程序<br/>
+DELTREE   删除目录和文件<br/>
+DEVICE    设备驱动程序加载工具<br/>
+DISKGEN   中文磁盘分区管理工具<br/>
+DOSKEY    键盘输入宏工具<br/>
+DOSLFN    长文件名支持<br/>
+EDIT      文本编辑器<br/>
+FDISK     磁盘分区工具<br/>
+FORMAT    磁盘格式化工具<br/>
+GHOST     磁盘备份和恢复工具<br/>
+MEM       内存信息查看<br/>
+MEMTEST   内存测试工具，必须使用干净引导模式，否则无法正常检测<br/>
+MORE      分屏显示<br/>
+MOUSE     鼠标驱动<br/>
+NTFSDOS   完全读写 NTFS 分区的工具<br/>
+NTPASS    支持 FAT/NTFS 分区的密码重置工具<br/>
+PQMAGIC   磁盘无损分区工具<br/>
+RESTART   重新启动<br/>
+SHSUCDHD  虚拟光驱<br/>
+SHSUCDX   小巧实用的光驱扩展驱动程序<br/>
+SMARTDRV  磁盘高速缓冲程序<br/>
+SYS       传输系统文件，将磁盘制成启动盘<br/>
+TWAY      天汇汉字系统<br/>
+TWKEY     天汇拼音输入法<br/>
+UNZIP     解压工具，支持长文件名<br/>
+XCOPY     文件和目录复制工具<br/>
+XMSDSK    虚拟内存盘工具</p>
+
+<p>二、安装</p>
+
+<p>◎ 安装到软盘</p>
+
+<p>由于软盘空间有限，仅支持将 RDOS 的部分功能安装到软盘：用 WinImage 将 RDOS.IMG 中的 GHOSTE、PQMAGIC 和 NET 功能剔除，更该磁盘格式为 1.44M 或 2.88M 软盘，再写入到软盘中即可。</p>
+
+<p>◎ 安装到光盘</p>
+
+<p>REBOOT 就是以光盘 ISO 形式提供的，只要直接把 REBOOT.ISO 刻录到光盘既可。</p>
+
+<p>特别注意，不能使用 UltraISO 编辑 REBOOT.ISO。如果要在关盘中加入其它文件，请把 REBOOT.ISO 解压缩到 REBOOT 目录中，然后添加或删除该目录中的文件或目录，最后双击 SETUP\RESIO.BAT，会自动重新生成 REBOOT.ISO。</p>
+
+<p>◎ 安装到硬盘</p>
+
+<p>这里仅说明如何把 RWIN 和 RDOS 安装到具有 NT Loader 的硬盘（即安装到 BOOT.INI 中），有两种方式：</p>
+
+<p> ▲ RAMDISK 方式：把 RWIN.IMG、RWIN.LDR、RWIN.COM、RWIN.SIF、RDOS.IMG、GRLDR 六个文件复制到根目录；在 BOOT.INI 中添加一行“C:\GRLDR="Rescue Environment Boot"”即可。</p>
+
+<p> △ 常规启动方式：把 RWIN.LDR、RWIN.COM、RDOS.IMG、GRLDR 四个文件复制到根目录（不用 RWIN.SIF 文件）；用 WinRAR 把 RWIN.IMG 解压缩到 C:\，然后在 BOOT.INI 中添加一行“C:\GRLDR="Rescue Environment Boot"”即可。。</p>
+
+<p>◎ 安装到优盘或移动硬盘</p>
+
+<p>这可能是大家最想知道的，下面分几种情况说明：</p>
+
+<p> △ 使用 NTBOOT，仅安装 RWIN：</p>
+
+<p>   1) 把 RWIN.COM、RWIN.SIF、RWIN.IMG 和 RWIN.LDR 复制到优盘中。<br/>
+   2) 把 RWIN.LDR 改名为 NTLDR。<br/>
+   3) 在命令提示符中，执行“SETUP\NTBOOT.EXE X:”，写入引导区到优盘中。</p>
+
+<p> ▲ 使用 GRUBINST，安装 RWIN &amp; RDOS：</p>
+
+<p>   在 Windows 中执行 SETUP\GRUBUTIL\GRUBINST_GUI.EXE 安装 GRLDR，然后复制 RWIN.IMG、RWIN.LDR、RWIN.COM、RWIN.SIF、RDOS.IMG 和 GRLDR 到优盘。</p>
+
+<p>   如果不能启动，执行如下操作：</p>
+
+<p>   1) 用 SETUP\HPUSBFW.EXE 格式化优盘，FAT 或 FAT32 格式。<br/>
+   2) 用 SETUP\GRUBUTIL\GRUBINST_GUI.EXE 写入 GRUB 引导扇区到优盘分区引导区（不选择 MBR，而是选择优盘盘符，但肯定会写入 MBR 的）。<br/>
+   3) 复制所有文件到优盘。<br/>
+   4) 用 UntraEdit 编辑优盘上的 GRLDR，查找“#ind --set-root”，替换为“find --set-root”。</p>
+
+<p>   这样的话，你的优盘就和大容量的移动硬盘一样了。</p>
+
+<p> △ 使用 USBOOT 和 BOOTLACE，安装 RWIN &amp; RDOS：</p>
+
+<p>   1) 用 SETUP\USBOOT\USBOOT.EXE 把优盘做成 DOS 启动盘（模式请随便选择，以能启动你的电脑到 DOS 为准，请多尝试）。<br/>
+   2) 复制 RWIN.IMG、RWIN.LDR、RWIN.COM、RWIN.SIF、RDOS.IMG、GRLDR 和 SETUP\BOOTLACE.EXE 到优盘。<br/>
+   3) 用优盘启动到 DOS，如果用优盘启动后是 A:\，执行“BOOTLACE.EXE --floppy --chs 0x00”后，可以把 BOOTLACE.EXE 和 DOS 启动文件 IO.SYS、MSDOS.SYS、COMMAND.COM 删除掉，制作完成。（这是使用了 GRUB4DOS 的 GRLDR 作为引导程序，且用 BOOTLACE.EXE 写入了 GRUB 引导扇区，完全脱离 DOS）<br/>
+   4) 如果用优盘启动后是 C:\，建议使用 GRUB.EXE。即使用 USBOOT 制作启动 DOS 优盘，然后把 REBOOT 中的文件和 SETUP\GRUB.EXE 拷贝到优盘，然后在 CONFIG.SYS 中添加“DEVICE=GRUB.EXE”，或在 AUTOEXEC.BAT 中运行 GRU.EXE 即可。</p>
+
+<p> △ 使用 WINGRUB 安装 RWIN &amp; RDOS：</p>
+
+<p>   不知道怎么描述，总
+之一定要非常小心！没有备份数据之前，不要用 WINGRUB 来安装 GRUB。再次提醒，请千万谨慎操作，本人不对损坏主引导扇区的后果负责。</p>
+
+<p> △ 使用量产工具实现优盘 USB-CDROM 和 USB-HDD 格式双启动：</p>
+
+<p>   最近无忧启动论坛在讨论使用优盘主控芯片官方提供的量产工具把特定优盘格式化成 USB-CDROM 和 USB-HDD 格式双启动，此方法适应性最好，但一两句难以描述清楚。如有兴趣，请参考：http://bbs.wuyou.com/forumdisplay.php?fid=45 和 http://bbs.wuyou.com/viewthread.php?tid=106231</p>
+
+<p>以下是安装到优盘几点提示：</p>
+
+<p> △ 优盘推荐使用 FAT 或 FAT32 文件系统。<br/>
+ △ 优盘启动能否成功依赖于主板 BIOS。只要有耐心一般都能搞定。<br/>
+ △ 优盘启动速度差异较大，在不同的电脑中有不同的表现，大致在 2-5 分钟不等。<br/>
+ △ 如果你有 Windows Mobile 5.0 设备，配合 WM5torage，把这个放到手机的存储里，会是一随身携带的方便的启动盘：）</p>
+
+<p>三、备注</p>
+
+<p>◎ 不需要虚拟磁盘 B: 和 FBWF 支持，启动后通过删除不使用的文件和驱动程序 X: 盘有足够的空间（6～8M 左右）。且内置的工具均可直接运行，不需要解压缩到临时文件夹。</p>
+
+<p>◎ RWIN 中如果使用桌面上的宽带连接，将会删除一些 RAMDISK 上的部分系统工具，以提供更多的空间。如果要使用这些工具，请在此之前操作。如果其它情况下出现空间不足的情况，也请酌情删除掉部分工具。</p>
+
+<p>◎ 这里提供的 GRUB Loader 启动时只有 5 秒钟等待，默认进入 RWIN。如果需要修默认项，可以用 WinHEX 编辑 GRLDR，在文件尾部找到“default 0”，改为“default 1”即可。</p>
+
+<p>◎ 这里提供的软件和工具版权归原作者所有，本人提供此打包程序仅供研究测试之用。对于这些明介绍以及制作测试及批处理文件，本人不保留版权，欢迎继续修改。</p>
+
+<p>◎ RWIN 和 RDOS 的定位是系统应急启动盘，制作此启动盘只是用我自己的选择原则，不一定能符合您的需求。</p>
+
+<p>四、致谢</p>
+
+<p>◎ 感谢 老九、老毛桃、neo4026，RWIN 启动盘是在这几位网友的启动盘基础上制作的。<br/>
+◎ 感谢 GRUB、GRUB4DOS 和 GRUBINST 的作者。<br/>
+◎ 感谢 strongchen 提供的网卡硬件驱动包。<br/>
+◎ 感谢各软件作者提供的各种好用软件。</p>
+
+<p>要获取更多信息，请访问 WWW.YONSM.NET</p>
+
+<p>Yonsm<br/>
+Yonsm@163.com<br/>
+WWW.Yonsm.NET<br/>
+2007.10.13，杭州</p>
+
+<p>讨论和截图请到无忧论坛：<br/>
+<a href="http://bbs.wuyou.com/viewthread.php?tid=86175&amp;extra=page%3D2">http://bbs.wuyou.com/viewthread.php?tid=86175&extra;=page%3D2</a></p>
+
+<p>下载:<a href="/assets/REBOOT.ISO">下载</a></p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/vc6-with-sp5-pp5-green/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/celecmd-code/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="283" data-url="http://yonsm.net/reboot/" data-title="REBOOT Reload - 可安装在优盘的 Windows 和 DOS 启动盘" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2007-08-04-reboot.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

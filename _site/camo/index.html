@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>Camo - Xcode 反逆向工程分析的混淆方案</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>Camo - Xcode 反逆向工程分析的混淆方案</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2014-02-28">2014-02-28</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#iOS" title="iOS">iOS</a>&nbsp;
+  
+  <a href="/tags/#逆向工程" title="逆向工程">逆向工程</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>逆向工程分析的三大线索是：字符串、导入表、函数名。我捣鼓了一个自己的方案，以加大 iOS/OSX 程序的逆向分析难度：</p>
+
+<ol>
+<li><p>Camo 程序中搜索源代码目录，找出所有 Object 类名、方法名、属性名的符号，排除掉xcode iPhone SDK 中的符号（也是自动搜索获取），再排除掉导出的和第三方依赖的符号（都是根据参数自动获取）。然后把这些名称全部#define 一下成为随机的名称，写到一个.h中；</p></li>
+<li><p>在 Prefix.pch 的最前面#import这个自动生成的.h。去掉这个.h一样可以编译，加上.h就是混淆名称，没有任何副作用。</p></li>
+</ol>
+
+
+<p>PS：Generate Debug Symbol一定要去掉（Xcode默认创建的project，即使是Release[Archive/Profile]编译也启用了Generate Debug Symbol的），去掉之后“等同于源代码”的问题可以有很大的改观。</p>
+
+<p>期望以后Camo还支持一个另外的两个特性：加密所有的字符串，所有的函数调用（全部使用dlsym来动态获取）。这样编译出来的二进制文件几乎自己都认不出来了。</p>
+
+<p>完整的混淆方案，后面再整理 Check List。</p>
+
+<p>2014.07.30 补充：</p>
+
+<p>终于出成品了，参看：<a href="https://github.com/Yonsm/Camo">https://github.com/Yonsm/Camo</a></p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/mountbind/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/github/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2014-02-27-camo.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>

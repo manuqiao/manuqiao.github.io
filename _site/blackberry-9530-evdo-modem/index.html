@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" lang="zh-CN">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="author" content="Yonsm" />
+    <title>终于搞定了 BlackBerry 9530 EVDO 上网（手机+电脑Modem）</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link href="/feed/" rel="alternate" title="Yonsm" type="application/atom+xml" />
+    <link rel="stylesheet" href="/media/css/style.css" />
+    <link rel="stylesheet" href="/media/css/highlight.css" />
+    <script type="text/javascript" src="/media/js/jquery-1.7.1.min.js"></script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="main" role="main">
+        <header>
+        <h1>终于搞定了 BlackBerry 9530 EVDO 上网（手机+电脑Modem）</h1>
+        </header>
+        <nav>
+        <span><a title="网站首页" class="" href="/">首页</a></span>
+        <span><a title="文章分类" class="" href="/categories/">分类</a></span>
+        <span><a title="标签索引" class="" href="/tags/">标签</a></span>
+        <!--<span><a title="友情链接" class="" href="/links/">链接</a></span>-->
+        <span><a title="留言交流" class="" href="/guestbook/">留言</a></span>
+        <span><a title="关于站长" class="" href="/about/">关于</a></span>
+        <span><a title="种子订阅" class="" href="/feed/" target="_blank">订阅</a></span>
+        </nav>
+        <article class="content">
+        <section class="meta">
+<span class="time">
+  <time datetime="2009-07-17">2009-07-17</time>
+</span>
+
+ | 
+<span class="categories">
+  分类
+  
+  <a href="/categories/#文档" title="文档">文档</a>&nbsp;
+  
+</span>
+
+
+ | 
+<span class="tags">
+  标签
+  
+  <a href="/tags/#折腾" title="折腾">折腾</a>&nbsp;
+  
+</span>
+
+</section>
+<section class="post">
+<p>朋友弄了张430多块钱的电信CDMA上网账号，想在黑莓 9530 中上网，并用作电脑的Modem上网，几经折腾，终于搞定了。<!-- more --></p>
+
+<p>在此记录一下，有需要的人可以尝试。</p>
+
+<p><strong>1. 获取A-KEY、IMSI、ESN</strong></p>
+
+<p>A-KEY：16位的HEX数字（如E886************），用于用户鉴权，只能从电信内部人士得到（网上都这样说，暂且就这样听吧）。</p>
+
+<p>ESN： 是16位的HEX数字（如80******），这个可以从UIM卡中读取（用CDMA Workshop 3.41，官方下载Dem版本）。或者……把在9530中拨打 ##000000 进入查看手机的ESN，给电信内部人士，叫他重新绑定你的手机ESN到IMSI（和A-KEY？）（我就是这种方法，因为我写入UIM卡的ESN到手机失败了——注意，初始情况下，手机的ESN不是UIM卡的ESN）。</p>
+
+<p>IMSI： 是15位的数字（如4600309********），手机号码的内部形式，这个应该可以从UIM卡中读取（不过我是另寻途径搞得）。同时IMSI也是EVDO的上网AN/AAA账号，其实可以打10000咨询服务人员。</p>
+
+<p>EVDO上网密码：打10000咨询，服务小姐可能啥也不知道，就问15位的账号（就是IMSI）和16位的密码。</p>
+
+<p><strong>2. 写入 A-KEY、IMSI、ESN 到 9530</strong></p>
+
+<p>IMSI：9530中拨打##000000，进入工程模式，在IMSI_S一栏输入 IMSI然后Save即可（需重启，请耐心等待）。</p>
+
+<p>A-KEY：上面的方法中，貌似也能写入A-KEY，但好像不会成功的。能成功的方法，见这里：http://bbs.maxpda.com/thread-196588-1-4.html。</p>
+
+<p>用到的工具 CDMA Workshop 3.4.1 Demo（注意：网上的其他版本的破解版有病毒）:<br/>
+http://www.cdma-ware.com/workshop.html</p>
+
+<p>ESN：见这里：http://honeyhan.cn/200906/18_1023.html，但是，我尝试了无数次，失败了！只好另寻途径，把自己手机的ESN给电信“内部人士”，叫他帮忙用收集的ESN绑定一个新的IMSI（和A-KEY），所以我就没改变手机的ESN了。</p>
+
+<p>到此，应该能打电话了。</p>
+
+<p><strong>3. 导入ServiceBook，支持手机上网</strong></p>
+
+<p>具体操作：http://bbs.pgcw.com.cn/dispbbs.asp?boardid=67&id;=30495&page;=0&move;=next</p>
+
+<p>Service Book 我用的是这里的：http://www.52blackberry.com/viewthread.php?tid=252900</p>
+
+<p>WinLoader：http://chinawrc.blog.enorth.com.cn/article/242417.shtml</p>
+
+<p>这时候，用手机的浏览器能上网了，不过是 CDMA1X 的，速度比较慢。<br/>
+我这里，依然有个问题：自带的浏览器上网，如果久了，会突然不能上网，Google 地图等其他软件均不能上网，拔电池重启又行了。不知何故（刷151OS之前手机 中国移动 EDGE 上网一直都很稳定的，不过Service Book 不一样）。不过下文的用作电脑的调制解调器方式，很稳定，很久都OK。</p>
+
+<p><strong>4. 导入PRL，支持EVDO</strong></p>
+
+<p>我用到的 PRL 文件从这里下载：http://www.52blackberry.com/viewthread.php?tid=252900</p>
+
+<p>操作方法：http://www.52blackberry.com/viewthread.php?tid=214199</p>
+
+<p>补充说明：上面的操作方法语焉不详，我补充一下，必须用QPST 2.7.264 或更新的版本，以下QPST操作在更改数据之前，请首先 Read From Phone 一下。<br/>
+1) QPST Configuration 好端口后，在 Service Programming 中，ROAM页面，导入PRL文件，自动重启;<br/>
+ 2) PPP Config 页面，点击 Um，User Password 都填入“card”，并勾上Req PW enc，点“Write to Phone”（不确定这步骤可能不需要，就当有多不坏菜吧）<br/>
+3) 在PPP Config 页面，点击AN，User 输入你的IMSI，密码输入EVDO的密码（前面说过的，拨打10000号可以问到，分别是15位和16为），并勾上Req PW enc，点“Write to Phone”（这部关键）。<br/>
+4) 其他操作，看这里吧 http://www.52blackberry.com/viewthread.php?tid=214199。<br/>
+5) Home SID 从这里查：http://bbs.pcpop.com/090114/4816107.html</p>
+
+<p>用到的工具 QPST 2.7.264 （注意：必须是这个版本或者更高版本，否则不能写入ROAM PRL和PPP的AN/AAA）：<br/>
+http://www.shuaji.net/down/soft/dopod/2009/2-12/down09212973261.shtml</p>
+
+<p>这时候，手机亦应能EVDO上网了，确认方法（手机启动后，一直显示 1xev，上网后也不改变，如果又变成1x，说明账号密码不对）</p>
+
+<p><strong>5. 设置拨号连接，支持用作电脑 Modem</strong></p>
+
+<ol>
+<li>把手机接上电脑中，控制面板调制解调器中，选择黑莓“标准调制解调器”，属性，调制解调器初始命令（作用是启用手机的调制解调器模式）：<br/>
+AT+CGDCONT=1,"ip","ctnet"</li>
+</ol>
+
+
+<p>2) 新建拨号连接，设置如下（杭州的设置，其他地方应该也是这样？）：</p>
+
+<p>号码：#777<br/>
+用户名：ctnet@mycdma.cn<br/>
+密码：vnet.mobi</p>
+
+<p>然后拨号，可以看到手机顶部出现“调制解调器模式启用”的文字，小写的 1xev 也变成大写 1XEV 了。到电信网站上下载点东西看看，速度超级快（300KB/s），不过到其他网站上则可能慢一些（限速啦？）</p>
+
+<p><strong>6. 评论</strong></p>
+
+<p>电脑上下载中国电信的东西，速度竟然能达到300KB/s，下载Yonsm.NET的东西稳定保持在150KB/s以上，电信的3G才是真正的3G！TD这种垃圾，继续爱国去吧！</p>
+
+</section>
+<section align="right">
+<br/>
+<span>
+	<a  href="/iphone-development-secrets/" class="pageNav"  >上一篇</a>
+	&nbsp;&nbsp;&nbsp;
+	<a  href="/openmp-programming-guide/" class="pageNav"  >下一篇</a>
+</span>
+</section>
+
+	
+	<div class="ds-thread" data-thread-key="472" data-url="http://yonsm.net/blackberry-9530-evdo-modem/" data-title="终于搞定了 BlackBerry 9530 EVDO 上网（手机+电脑Modem）" />
+		
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"yonsm"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = 'http://static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		|| document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+
+
+        </article>
+      </div>
+
+    <footer>
+        <p><small>
+            <a href="http://github.com/Yonsm/NET/new/gh-pages/_posts" target="_blank" title="撰写文章">Po</a>wer<a href="http://github.com/Yonsm/NET/edit/gh-pages/_posts/2009-07-16-blackberry-9530-evdo-modem.md" target="_blank" title="编辑页面">ed</a> by <a href="http://jekyllrb.com" target="_blank">Jekyll</a> @ <a href="http://github.com/Yonsm/NET" target="_blank" title="项目主页">GitHub</a>
+             | <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/cn/" target="_blank" title="许可协议">©</a> 2004 - 2014 <a href="/about/">Yonsm</a>
+
+             | <a href="http://www.miibeian.gov.cn" target="_blank">浙ICP备12026616号</a>
+
+
+             | <script src="http://s85.cnzz.com/stat.php?id=119959"></script>
+
+         </small></p>
+    </footer>
+
+    </div>
+  </body>
+</html>
