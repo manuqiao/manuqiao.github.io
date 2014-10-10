@@ -1,7 +1,7 @@
 ---
-date: 2014-10-10 10:44:17
+date: 0000-10-10 10:44:17
 layout: post
-title: Markdown笔记
+title: 
 categories: 其他
 tags: 学习笔记
 ---
