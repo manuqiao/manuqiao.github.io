@@ -2,8 +2,8 @@
 date: 2014-12-01 11:03:54
 layout: post
 title: IBDesignable报错
-categories: 
-tags: 学习笔记
+categories: iOS
+tags: 错误处理 xib
 ---
 
 如果遇到IBDesignable编译期报错
