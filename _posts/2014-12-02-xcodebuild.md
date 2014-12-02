@@ -14,7 +14,11 @@ tags: 学习笔记 xcodebuild
 
 2.2	在开发者网站添加distribute provisioning profile，下载到本地打开。注意app id。使用步骤2生成的证书。
 
-3.	terminal进入工程文件夹，先打包xcarchive
+3.	工程中设置code signing identity为don’t code sign
+
+	provisioning profile为automatic
+	
+	terminal进入工程文件夹，先打包xcarchive
 
 	`xcodebuild -scheme MyiOSApp archive -archivePath /Users/username/Desktop/MyiOSApp.xcarchive`
 
