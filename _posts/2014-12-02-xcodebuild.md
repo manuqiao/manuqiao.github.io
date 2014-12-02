@@ -29,3 +29,5 @@ tags: 学习笔记 xcodebuild
 	注：MyCompany Distribution Profile及Developer ID Application: My Software Company之前相应的文件下载打开，可以在管理器中可以查看名称
 
 4.	试一下能否使用xcode或itunes直接安装到真机上。注：真机需要注册到开发者账号上。
+
+参考贴：`[http://stackoverflow.com/questions/2664885/xcode-build-and-archive-from-command-line](http://stackoverflow.com/questions/2664885/xcode-build-and-archive-from-command-line)`
